@@ -1,7 +1,7 @@
 import { Badge } from '@mui/material'
 import { AppBar, Toolbar, Typography } from '@mui/material'
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link} from 'react-router-dom'
 import HomeIcon from '@mui/icons-material/Home';
 import { makeStyles } from '@mui/styles';
 
@@ -36,10 +36,6 @@ function Navbar() {
             </Typography>
           </Link>
         </Badge>
-
-
-
-
 
       </Toolbar>
 
