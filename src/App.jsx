@@ -9,13 +9,16 @@ import Judge from './component/Judge'
 import Login from './component/Login'
 import Register from './component/Register'
 import Profile from './component/Profile'
+import { useState } from 'react';
+
 
 function App() {
+  const [login, setLogin] = useState(false)
   return (
     <div className="App">
       <BrowserRouter>
 
-        <Navbar />
+         {login && <Navbar />}
         <Routes>
 
           <Route path="/" element={<Home />} />
