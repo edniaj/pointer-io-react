@@ -463,7 +463,8 @@ function Register() {
       }
     },
     follower:[],
-    following:[]
+    following:[],
+    profilePicture:''
   })
   const [educationCount, setEducationaCount] = useState(1)
   const [licenseCount, setLicenseCount] = useState(1)
@@ -530,7 +531,7 @@ function Register() {
         delete clone['licenseAndCertificate'][key]
       }
     }
-    console.log(`Sending data \n ${clone}`)
+    // console.log(`Sending data \n ${clone}`)
     await axios.post('http://localhost:3000/register', clone).then(res => {
       navigate("../login")
       console.log(res.data)
@@ -566,37 +567,25 @@ function Register() {
             </div>
             <div>
               <FormControl>
-
-
-
                 <InputLabel>Field of study</InputLabel>
-
                 <OutlinedInput
                   value={formData[fieldName][index]['fieldOfStudy']}
                   name='fieldOfStudy'
                   onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
                 ></OutlinedInput>
               </FormControl>
-
             </div>
 
             <div>
               <FormControl>
-
-
-
                 <InputLabel>Level of education</InputLabel>
-
                 <OutlinedInput
                   value={formData[fieldName][index]['levelOfEducation']}
                   name='levelOfEducation'
                   onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
                 ></OutlinedInput>
               </FormControl>
-
             </div>
-
-
 
             <div>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -866,17 +855,6 @@ function Register() {
         Submit
       </Button>
 
-
-      {/*
-        Contact number
-        Education - multi valued
-          - School
-          - Education level
-          - Field of study
-          - startDate
-        License and certificates - Multi valued
-      
-      */}
     </div>
   )
 }

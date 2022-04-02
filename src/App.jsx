@@ -1,5 +1,4 @@
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-import Navbar from './component/Navbar'
+import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom';
 import Home from './component/Home'
 import About from './component/About'
 import Error from './component/Error'
@@ -10,19 +9,21 @@ import Login from './component/Login'
 import Register from './component/Register/Register'
 import Profile from './component/Profile'
 import { createContext, useState } from 'react';
+import Navbar from './component/Navbar';
 
 export const loginContext = createContext(null)
+
 
 function App() {
   const [login, setLogin] = useState(false)
 
+
   return (
     <div className="App">
       <BrowserRouter>
-
         {login && <Navbar />}
-        <loginContext.Provider value={{ login, setLogin }}>
 
+        <loginContext.Provider value={{ login, setLogin }}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/profile/:id" element={<Profile />} />
