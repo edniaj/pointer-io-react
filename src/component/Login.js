@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 
 function Login() {
   return (
-    <Link href="#">Link</Link>
+    <div>
+      test
+    </div>
   )
 }
 

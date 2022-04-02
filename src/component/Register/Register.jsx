@@ -18,6 +18,13 @@ import AddIcon from '@mui/icons-material/Add';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { useLayoutEffect } from 'react'
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
+import Stack from '@mui/material/Stack';
+import { Link, useNavigate } from 'react-router-dom'
+const axios = require('axios')
 
 const countries = [
   { code: 'AD', label: 'Andorra', phone: '376' },
@@ -445,7 +452,7 @@ const countries = [
 ]
 
 function Register() {
-  const [value, setValue] = useState(null)
+
 
   const [formData, setFormData] = useState({
     education: {
@@ -456,21 +463,27 @@ function Register() {
       0: {
 
       }
-    }
+    },
+    follower:[],
+    following:[]
   })
-
   const [educationCount, setEducationaCount] = useState(1)
   const [licenseCount, setLicenseCount] = useState(1)
-
+  const [showPassword, setShowPassword] = useState(false)
+  let navigate = useNavigate()
+  // This is to populate education field inside the form
   useEffect(() => {
     formData['education'][educationCount] = {
     }
   }, [educationCount])
+  // this is to populaate the license and certificates field inside the form
 
   useEffect(() => {
     formData['licenseAndCertificate'][licenseCount] = {
     }
   }, [licenseCount])
+
+
 
   // handleInput will handle regular form data
   const handleInput = e => {
@@ -479,82 +492,205 @@ function Register() {
       [e.target.name]: e.target.value
     })
   }
-
   // Mainly handles fields that are arrays and have to be managed dynamically
   const handleArray = (e, fieldName, index) => {
     let clone = { ...formData }
     clone[fieldName][index][e.target.name] = e.target.value
-    console.log(clone)
     setFormData(clone)
   }
-
-  // Handles date. Date form field does not emit event.
+  // Handles Date. Date form field does not emit event.
   const handleDate = (dateValue, fieldName, keyName, index) => {
     let clone = { ...formData }
     clone[fieldName][index][keyName] = dateValue
     setFormData(clone)
 
   }
+  const handleCountryCode = e => {
+    let value = `(${e.code}) +${e.phone}`
+    setFormData({
+      ...formData,
+      countryCode: value,
+      country: e.label
+    })
+  }
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+  const handlePOST = async () => {    
+    let clone = JSON.parse(JSON.stringify(formData)) // @dev Deep copy because nested object inside form data
+    delete clone['education'][educationCount] // Delete buffer
+    delete clone['licenseAndCertificate'][licenseCount] // Delete buffer
+    // Clean up empty fields
+    for (let key in clone['education']) {
+
+      if (Object.keys(clone['education'][key]).length === 0) {
+        delete clone['education'][key]
+      }
+    }
+    for (let key in clone['licenseAndCertificate']) {
+      if (Object.keys(clone['licenseAndCertificate'][key]).length === 0) {
+        delete clone['licenseAndCertificate'][key]
+      }
+    }
+    console.log(`Sending data \n ${clone}`)
+    await axios.post('http://localhost:3000/register', clone).then(res => {
+      navigate("../login")
+      console.log(res.data)
+    }).catch(err => { 
+      navigate(-1)
+      console.log(err.response.data )
+    })
+  }
+
+
+  // @dev Helper functions
 
   // Dynamically generate Education field
   const populateEducation = () => {
     let writeData = []
+    let fieldName = 'education'
     for (let index = 0; index < educationCount; index++) {
       writeData.push(
         <Fragment key={index}>
-          <div>
-            <FormControl>
-              <InputLabel>School name</InputLabel>
-              <OutlinedInput
-                value={formData['education'][index]['schoolName']}
-                name='schoolName'
-                onChange={(e) => handleArray(e, 'education', index)}
-              ></OutlinedInput>
+          <Stack direction="row" spacing={2}>
+            <div>
 
+              <FormControl>
+                <InputLabel>School name</InputLabel>
+                <OutlinedInput
+                  value={formData[fieldName][index]['schoolName']}
+                  name='schoolName'
+                  onChange={(e) => handleArray(e, fieldName, index)}
+                ></OutlinedInput>
+
+              </FormControl>
+
+            </div>
+            <div>
+              <FormControl>
+
+
+
+                <InputLabel>Field of study</InputLabel>
+
+                <OutlinedInput
+                  value={formData[fieldName][index]['fieldOfStudy']}
+                  name='fieldOfStudy'
+                  onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
+                ></OutlinedInput>
+              </FormControl>
+
+            </div>
+
+            <div>
+              <FormControl>
+
+
+
+                <InputLabel>Level of education</InputLabel>
+
+                <OutlinedInput
+                  value={formData[fieldName][index]['levelOfEducation']}
+                  name='levelOfEducation'
+                  onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
+                ></OutlinedInput>
+              </FormControl>
+
+            </div>
+
+
+
+            <div>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label="Start Date"
+                  value={formData[fieldName][index]['startDate']}
+                  name="startDate"
+                  onChange={dateValue => handleDate(dateValue, fieldName, 'startDate', index)}
+                  renderInput={(params) => (
+                    <TextField {...params} helperText={params?.inputProps?.placeholder} />
+                  )}
+                />
+              </LocalizationProvider>
+
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label="End Date"
+                  value={formData[fieldName][index]['endDate']}
+                  name="endDate"
+                  onChange={dateValue => handleDate(dateValue, fieldName, 'endDate', index)}
+                  renderInput={(params) => (
+                    <TextField {...params} helperText={params?.inputProps?.placeholder} />
+                  )}
+                />
+              </LocalizationProvider>
+            </div>
+
+            <div>
+              <FormControl>
+                <InputLabel>Description</InputLabel>
+                <OutlinedInput
+                  value={formData[fieldName][index]['description']}
+                  name='description'
+                  onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
+                ></OutlinedInput>
+              </FormControl>
+            </div>
+          </Stack>
+        </Fragment>
+      )
+    }
+
+    return <>{writeData}</>
+  }
+  const populateLicense = () => {
+    let writeData = []
+    let fieldName = 'licenseAndCertificate'
+    for (let index = 0; index < licenseCount; index++) {
+      writeData.push(
+        <Fragment key={index}>
+          <Stack direction="row" spacing={2}>
+
+            <FormControl>
+              <InputLabel>Name</InputLabel> {/*i.e. microsoft certified network security */}
+              <OutlinedInput
+                value={formData[fieldName][index]['schoolName']}
+                name='name'
+                onChange={(e) => handleArray(e, fieldName, index)}
+              ></OutlinedInput>
             </FormControl>
 
-          </div>
-          <div>
             <FormControl>
-
-
-
-              <InputLabel>Field of study</InputLabel>
-
+              <InputLabel>Issuing organisation</InputLabel> {/*i.e. microsoft certified network security */}
               <OutlinedInput
-                value={formData['education'][index]['fieldOfStudy']}
-                name='fieldOfStudy'
-                onChange={(e) => handleArray(e, 'education', index)} //handleArray( event, fieldName inside formData, index)
+                value={formData[fieldName][index]['issuingOrganisation']}
+                name='issuingOrganisation'
+                onChange={(e) => handleArray(e, fieldName, index)}
               ></OutlinedInput>
             </FormControl>
 
-          </div>
-
-          <div>
             <FormControl>
-
-
-
-              <InputLabel>Level of education</InputLabel>
-
+              <InputLabel>Credential URL</InputLabel> {/*i.e. microsoft certified network security */}
               <OutlinedInput
-                value={formData['education'][index]['levelOfEducation']}
-                name='levelOfEducation'
-                onChange={(e) => handleArray(e, 'education', index)} //handleArray( event, fieldName inside formData, index)
+                value={formData[fieldName][index]['credentialURL']}
+                name='credentialURL'
+                onChange={(e) => handleArray(e, fieldName, index)}
               ></OutlinedInput>
             </FormControl>
-
-          </div>
-
-
-
-          <div>
+            <FormControl>
+              <InputLabel>Image URL</InputLabel> {/*i.e. microsoft certified network security */}
+              <OutlinedInput
+                value={formData[fieldName][index]['imageUrl']}
+                name='imageUrl'
+                onChange={(e) => handleArray(e, fieldName, index)}
+              ></OutlinedInput>
+            </FormControl>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label="Start Date"
-                value={formData['education'][index]['startDate']}
+                value={formData[fieldName][index]['startDate']}
                 name="startDate"
-                onChange={dateValue => handleDate(dateValue, 'education', 'startDate', index)}
+                onChange={dateValue => handleDate(dateValue, fieldName, 'startDate', index)}
                 renderInput={(params) => (
                   <TextField {...params} helperText={params?.inputProps?.placeholder} />
                 )}
@@ -564,91 +700,15 @@ function Register() {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label="End Date"
-                value={formData['education'][index]['endDate']}
+                value={formData[fieldName][index]['endDate']}
                 name="endDate"
-                onChange={dateValue => handleDate(dateValue, 'education', 'endDate', index)}
+                onChange={dateValue => handleDate(dateValue, fieldName, 'endDate', index)}
                 renderInput={(params) => (
                   <TextField {...params} helperText={params?.inputProps?.placeholder} />
                 )}
               />
             </LocalizationProvider>
-          </div>
-
-          <div>
-            <FormControl>
-              <InputLabel>Description</InputLabel>
-              <OutlinedInput
-                value={formData['education'][index]['description']}
-                name='description'
-                onChange={(e) => handleArray(e, 'education', index)} //handleArray( event, fieldName inside formData, index)
-              ></OutlinedInput>
-            </FormControl>
-          </div>
-        </Fragment>
-      )
-    }
-
-    return <>{writeData}</>
-  }
-
-  const populateLicense = () => {
-    let writeData = []
-    let fieldName = 'licenseAndCertificate'
-    for (let index = 0; index < licenseCount; index++) {
-      writeData.push(
-        <Fragment key={index}>
-
-          <FormControl>
-            <InputLabel>Name</InputLabel> {/*i.e. microsoft certified network security */}
-            <OutlinedInput
-              value={formData[fieldName][index]['schoolName']}
-              name='name'
-              onChange={(e) => handleArray(e, fieldName, index)}
-            ></OutlinedInput>
-          </FormControl>
-
-          <FormControl>
-            <InputLabel>Issuing organisation</InputLabel> {/*i.e. microsoft certified network security */}
-            <OutlinedInput
-              value={formData[fieldName][index]['issuingOrganisation']}
-              name='issuingOrganisation'
-              onChange={(e) => handleArray(e, fieldName, index)}
-            ></OutlinedInput>
-          </FormControl>
-
-          <FormControl>
-            <InputLabel>Credential URL</InputLabel> {/*i.e. microsoft certified network security */}
-            <OutlinedInput
-              value={formData[fieldName][index]['credentialURL']}
-              name='credentialURL'
-              onChange={(e) => handleArray(e, fieldName, index)}
-            ></OutlinedInput>
-          </FormControl>
-
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Start Date"
-              value={formData[fieldName][index]['startDate']}
-              name="startDate"
-              onChange={dateValue => handleDate(dateValue, fieldName, 'startDate', index)}
-              renderInput={(params) => (
-                <TextField {...params} helperText={params?.inputProps?.placeholder} />
-              )}
-            />
-          </LocalizationProvider>
-
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="End Date"
-              value={formData[fieldName][index]['endDate']}
-              name="endDate"
-              onChange={dateValue => handleDate(dateValue, fieldName, 'endDate', index)}
-              renderInput={(params) => (
-                <TextField {...params} helperText={params?.inputProps?.placeholder} />
-              )}
-            />
-          </LocalizationProvider>
-
+          </Stack>
 
         </Fragment >
       )
@@ -657,19 +717,7 @@ function Register() {
   }
 
 
-  const handleCountryCode = e => {
-    let value = `(${e.code}) +${e.phone}`
-    setFormData({
-      ...formData,
-      countryCode: value,
-      country: e.label
-    })
-  }
 
-  const [showPassword, setShowPassword] = useState(false)
-  const handleShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
   return (
     <div>
       <div>
@@ -815,6 +863,12 @@ function Register() {
       <Fab color="primary" aria-label="add" onClick={() => setLicenseCount(licenseCount + 1)}>
         <AddIcon />
       </Fab>
+
+      <Button variant="contained" endIcon={<SendIcon />} onClick={handlePOST}>
+        Submit
+      </Button>
+
+
       {/*
         Contact number
         Education - multi valued
