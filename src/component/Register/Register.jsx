@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { FormControl } from '@mui/material'
 import { TextField } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
@@ -12,6 +12,9 @@ import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
+import { useEffect } from 'react'
+import { Fab } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add';
 
 const countries = [
   { code: 'AD', label: 'Andorra', phone: '376' },
@@ -438,20 +441,27 @@ const countries = [
   { code: 'ZW', label: 'Zimbabwe', phone: '263' }
 ]
 
-function Register () {
+function Register() {
   const [formData, setFormData] = useState({
-    education: { 0: {
-      'schoolName': "Ke ming primary school"
-    } },
+    education: {
+      0: {
+      }
+    },
     licenseAndCertificates: {}
   })
 
   const [educationCount, setEducationaCount] = useState(1)
   const [licenseCount, setLicenseCount] = useState(1)
 
-  const handleArray = (e,fieldName, index) => {
-    let clone = {...formData}
+  useEffect(() => {
+    formData['education'][educationCount] = {
+    }
+  }, [educationCount])
+
+  const handleArray = (e, fieldName, index) => {
+    let clone = { ...formData }
     clone[fieldName][index][e.target.name] = e.target.value
+    console.log(clone)
     setFormData(clone)
   }
 
@@ -459,14 +469,30 @@ function Register () {
     let writeData = []
     for (let index = 0; index < educationCount; index++) {
       writeData.push(
-        <FormControl>
-          <InputLabel>School name</InputLabel>
-          <OutlinedInput
-            value={formData['education'][0]['schoolName']}
-            name='schoolName'
-            onChange={ (e) => handleArray(e, 'education', index)}
-          ></OutlinedInput>
-        </FormControl>
+        <Fragment key={index}>
+          <FormControl>
+            <InputLabel>School name</InputLabel>
+            <OutlinedInput
+              value={formData['education'][index]['schoolName']}
+              name='schoolName'
+              onChange={(e) => handleArray(e, 'education', index)}
+            ></OutlinedInput>
+
+          </FormControl>
+          <FormControl>
+
+
+
+            <InputLabel>Field of study</InputLabel>
+
+            <OutlinedInput
+              value={formData['education'][index]['fieldOfStudy']}
+              name='fieldOfStudy'
+              onChange={(e) => handleArray(e, 'education', index)} //handleArray( event, fieldName inside formData, index)
+            ></OutlinedInput>
+          </FormControl>
+
+        </Fragment>
       )
     }
 
@@ -481,7 +507,7 @@ function Register () {
   }
 
   const handleCountryCode = e => {
-    let value = `(${e.code}) +${e.phone}` 
+    let value = `(${e.code}) +${e.phone}`
     setFormData({
       ...formData,
       countryCode: value,
@@ -627,6 +653,9 @@ function Register () {
         </FormControl>
       </div>
       {populateEducation()}
+      <Fab color="primary" aria-label="add" onClick={() => setEducationaCount(educationCount+1)}>
+        <AddIcon />
+      </Fab>
 
       {/*
         Contact number
@@ -643,6 +672,8 @@ function Register () {
 }
 
 export default Register
+
+
 
 /*
 Master plan

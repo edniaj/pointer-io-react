@@ -7,21 +7,23 @@ import Job from './component/Job'
 import JobDetails from './component/JobDetails'
 import Judge from './component/Judge'
 import Login from './component/Login'
-import Register from './component/Register'
+import Register from './component/Register/Register'
 import Profile from './component/Profile'
+import { useState } from 'react';
 
 function App() {
+  const [login, setLogin] = useState(false)
   return (
     <div className="App">
       <BrowserRouter>
 
-        <Navbar />
+        {login && <Navbar/>}
         <Routes>
 
           <Route path="/" element={<Home />} />
           <Route path="/profile/:id" element={<Profile />}/>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/Register" element={<Register />} />
           <Route path="/about" element={<About />} />
           <Route path="/job" element={<Job />} />
           <Route path="/job/:id" element={<JobDetails />} />
