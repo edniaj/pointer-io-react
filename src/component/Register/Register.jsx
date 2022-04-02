@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react'
-import { FormControl } from '@mui/material'
+import { FormControl, Typography } from '@mui/material'
 import { TextField } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import OutlinedInput from '@mui/material/OutlinedInput'
@@ -15,6 +15,9 @@ import FormLabel from '@mui/material/FormLabel'
 import { useEffect } from 'react'
 import { Fab } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 const countries = [
   { code: 'AD', label: 'Andorra', phone: '376' },
@@ -442,12 +445,18 @@ const countries = [
 ]
 
 function Register() {
+  const [value, setValue] = useState(null)
+
   const [formData, setFormData] = useState({
     education: {
       0: {
       }
     },
-    licenseAndCertificates: {}
+    licenseAndCertificate: {
+      0: {
+
+      }
+    }
   })
 
   const [educationCount, setEducationaCount] = useState(1)
@@ -458,6 +467,20 @@ function Register() {
     }
   }, [educationCount])
 
+  useEffect(() => {
+    formData['licenseAndCertificate'][licenseCount] = {
+    }
+  }, [licenseCount])
+
+  // handleInput will handle regular form data
+  const handleInput = e => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  // Mainly handles fields that are arrays and have to be managed dynamically
   const handleArray = (e, fieldName, index) => {
     let clone = { ...formData }
     clone[fieldName][index][e.target.name] = e.target.value
@@ -465,33 +488,102 @@ function Register() {
     setFormData(clone)
   }
 
+  // Handles date. Date form field does not emit event.
+  const handleDate = (dateValue, fieldName, keyName, index) => {
+    let clone = { ...formData }
+    clone[fieldName][index][keyName] = dateValue
+    setFormData(clone)
+
+  }
+
+  // Dynamically generate Education field
   const populateEducation = () => {
     let writeData = []
     for (let index = 0; index < educationCount; index++) {
       writeData.push(
         <Fragment key={index}>
-          <FormControl>
-            <InputLabel>School name</InputLabel>
-            <OutlinedInput
-              value={formData['education'][index]['schoolName']}
-              name='schoolName'
-              onChange={(e) => handleArray(e, 'education', index)}
-            ></OutlinedInput>
+          <div>
+            <FormControl>
+              <InputLabel>School name</InputLabel>
+              <OutlinedInput
+                value={formData['education'][index]['schoolName']}
+                name='schoolName'
+                onChange={(e) => handleArray(e, 'education', index)}
+              ></OutlinedInput>
 
-          </FormControl>
-          <FormControl>
+            </FormControl>
+
+          </div>
+          <div>
+            <FormControl>
 
 
 
-            <InputLabel>Field of study</InputLabel>
+              <InputLabel>Field of study</InputLabel>
 
-            <OutlinedInput
-              value={formData['education'][index]['fieldOfStudy']}
-              name='fieldOfStudy'
-              onChange={(e) => handleArray(e, 'education', index)} //handleArray( event, fieldName inside formData, index)
-            ></OutlinedInput>
-          </FormControl>
+              <OutlinedInput
+                value={formData['education'][index]['fieldOfStudy']}
+                name='fieldOfStudy'
+                onChange={(e) => handleArray(e, 'education', index)} //handleArray( event, fieldName inside formData, index)
+              ></OutlinedInput>
+            </FormControl>
 
+          </div>
+
+          <div>
+            <FormControl>
+
+
+
+              <InputLabel>Level of education</InputLabel>
+
+              <OutlinedInput
+                value={formData['education'][index]['levelOfEducation']}
+                name='levelOfEducation'
+                onChange={(e) => handleArray(e, 'education', index)} //handleArray( event, fieldName inside formData, index)
+              ></OutlinedInput>
+            </FormControl>
+
+          </div>
+
+
+
+          <div>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Start Date"
+                value={formData['education'][index]['startDate']}
+                name="startDate"
+                onChange={dateValue => handleDate(dateValue, 'education', 'startDate', index)}
+                renderInput={(params) => (
+                  <TextField {...params} helperText={params?.inputProps?.placeholder} />
+                )}
+              />
+            </LocalizationProvider>
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="End Date"
+                value={formData['education'][index]['endDate']}
+                name="endDate"
+                onChange={dateValue => handleDate(dateValue, 'education', 'endDate', index)}
+                renderInput={(params) => (
+                  <TextField {...params} helperText={params?.inputProps?.placeholder} />
+                )}
+              />
+            </LocalizationProvider>
+          </div>
+
+          <div>
+            <FormControl>
+              <InputLabel>Description</InputLabel>
+              <OutlinedInput
+                value={formData['education'][index]['description']}
+                name='description'
+                onChange={(e) => handleArray(e, 'education', index)} //handleArray( event, fieldName inside formData, index)
+              ></OutlinedInput>
+            </FormControl>
+          </div>
         </Fragment>
       )
     }
@@ -499,12 +591,71 @@ function Register() {
     return <>{writeData}</>
   }
 
-  const handleInput = e => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+  const populateLicense = () => {
+    let writeData = []
+    let fieldName = 'licenseAndCertificate'
+    for (let index = 0; index < licenseCount; index++) {
+      writeData.push(
+        <Fragment key={index}>
+
+          <FormControl>
+            <InputLabel>Name</InputLabel> {/*i.e. microsoft certified network security */}
+            <OutlinedInput
+              value={formData[fieldName][index]['schoolName']}
+              name='name'
+              onChange={(e) => handleArray(e, fieldName, index)}
+            ></OutlinedInput>
+          </FormControl>
+
+          <FormControl>
+            <InputLabel>Issuing organisation</InputLabel> {/*i.e. microsoft certified network security */}
+            <OutlinedInput
+              value={formData[fieldName][index]['issuingOrganisation']}
+              name='issuingOrganisation'
+              onChange={(e) => handleArray(e, fieldName, index)}
+            ></OutlinedInput>
+          </FormControl>
+
+          <FormControl>
+            <InputLabel>Credential URL</InputLabel> {/*i.e. microsoft certified network security */}
+            <OutlinedInput
+              value={formData[fieldName][index]['credentialURL']}
+              name='credentialURL'
+              onChange={(e) => handleArray(e, fieldName, index)}
+            ></OutlinedInput>
+          </FormControl>
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label="Start Date"
+              value={formData[fieldName][index]['startDate']}
+              name="startDate"
+              onChange={dateValue => handleDate(dateValue, fieldName, 'startDate', index)}
+              renderInput={(params) => (
+                <TextField {...params} helperText={params?.inputProps?.placeholder} />
+              )}
+            />
+          </LocalizationProvider>
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label="End Date"
+              value={formData[fieldName][index]['endDate']}
+              name="endDate"
+              onChange={dateValue => handleDate(dateValue, fieldName, 'endDate', index)}
+              renderInput={(params) => (
+                <TextField {...params} helperText={params?.inputProps?.placeholder} />
+              )}
+            />
+          </LocalizationProvider>
+
+
+        </Fragment >
+      )
+    }
+    return writeData
   }
+
 
   const handleCountryCode = e => {
     let value = `(${e.code}) +${e.phone}`
@@ -652,11 +803,18 @@ function Register() {
           </RadioGroup>
         </FormControl>
       </div>
+
+      <Typography variant="h4">Education</Typography>
       {populateEducation()}
-      <Fab color="primary" aria-label="add" onClick={() => setEducationaCount(educationCount+1)}>
+      <Fab color="primary" aria-label="add" onClick={() => setEducationaCount(educationCount + 1)}>
         <AddIcon />
       </Fab>
 
+      <Typography variant="h4">License and certificates</Typography>
+      {populateLicense()}
+      <Fab color="primary" aria-label="add" onClick={() => setLicenseCount(licenseCount + 1)}>
+        <AddIcon />
+      </Fab>
       {/*
         Contact number
         Education - multi valued
