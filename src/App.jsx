@@ -9,30 +9,32 @@ import Judge from './component/Judge'
 import Login from './component/Login'
 import Register from './component/Register/Register'
 import Profile from './component/Profile'
-import { useState } from 'react';
+import { createContext, useState } from 'react';
+
+export const loginContext = createContext(null)
 
 function App() {
   const [login, setLogin] = useState(false)
+
   return (
     <div className="App">
       <BrowserRouter>
 
-        {login && <Navbar/>}
-        <Routes>
+        {login && <Navbar />}
+        <loginContext.Provider value={{ login, setLogin }}>
 
-          <Route path="/" element={<Home />} />
-          <Route path="/profile/:id" element={<Profile />}/>
-          <Route path="/login" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/job" element={<Job />} />
-          <Route path="/job/:id" element={<JobDetails />} />
-          <Route path="/judge" element={<Judge />} />
-
-          {/* <Route path="" element={}/> */}
-          {/* Handling error routes */}
-          <Route path="*" element={<Error />} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/Register" element={<Register />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/job" element={<Job />} />
+            <Route path="/job/:id" element={<JobDetails />} />
+            <Route path="/judge" element={<Judge />} />
+            <Route path="*" element={<Error />} />
+          </Routes>
+        </loginContext.Provider>
       </BrowserRouter>
     </div>
   );
