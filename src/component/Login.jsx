@@ -15,7 +15,7 @@ import Cookies from 'js-cookie'
 import { useEffect } from 'react'
 
 function Login() {
-  let {login, setLogin } = useContext(loginContext)
+  let { login, setLogin } = useContext(loginContext)
   let navigate = useNavigate()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
@@ -52,56 +52,62 @@ function Login() {
     navigate('../')
   } // redirect to homepage if loggedin
   useEffect(() => {
+    let isCancelled = false;
     const handleCookie = async () => {
-      await axios.post('http://localhost:3000/login', {username:Cookies.get('username'), password:Cookies.get('password') })
+      await axios.post('http://localhost:3000/login', { username: Cookies.get('username'), password: Cookies.get('password') })
         .then(res => {
           console.log(res.data)
+          if(!isCancelled) setLogin(true)
           setLogin(true)
         })
         .catch(err => {
           console.log(err.response.data)
         })
     }
-    console.log('once')
-    handleCookie()  
+
+    handleCookie()
+
+    return () => {
+      isCancelled = true
+    }
   }, [Cookies.get('username')])
 
 
 
-return (
-  <>
-    <FormControl>
-      <InputLabel>Login</InputLabel>
-      <OutlinedInput
-        value={username}
-        name='username'
-        onChange={handleInput}
-      ></OutlinedInput>
-    </FormControl>
+  return (
+    <>
+      <FormControl>
+        <InputLabel>Login</InputLabel>
+        <OutlinedInput
+          value={username}
+          name='username'
+          onChange={handleInput}
+        ></OutlinedInput>
+      </FormControl>
 
-    <FormControl>
+      <FormControl>
 
-      <InputLabel> Password</InputLabel>
-      <OutlinedInput
-        type={showPassword ? 'text' : 'password'}
-        value={password}
-        name='password'
-        onChange={handleInput}
-        id='password'
-        endAdornment={
-          <IconButton onClick={handleShowPassword} edge='end'>
-            {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
-        }
-        label='Password'
-      ></OutlinedInput>
-    </FormControl>
+        <InputLabel> Password</InputLabel>
+        <OutlinedInput
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+          name='password'
+          onChange={handleInput}
+          id='password'
+          endAdornment={
+            <IconButton onClick={handleShowPassword} edge='end'>
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          }
+          label='Password'
+        ></OutlinedInput>
+      </FormControl>
 
-    <Button variant="outlined" endIcon={<LoginIcon />} onClick={handlePOST}>
-      Login
-    </Button>
-  </>
-)
+      <Button variant="outlined" endIcon={<LoginIcon />} onClick={handlePOST}>
+        Login
+      </Button>
+    </>
+  )
 }
 
 export default Login
