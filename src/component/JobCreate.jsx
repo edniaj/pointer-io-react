@@ -37,6 +37,8 @@ function JobCreate() {
         })
     }
 
+        
+
     return (
         <>
             <Typography variant="h3">Create posting</Typography>
@@ -66,9 +68,10 @@ function JobCreate() {
                         name='skillTags'
                         onChange={handleInput}
                     ></OutlinedInput>
-
                 
             </div>
+
+            <div id="map"></div>
 
 
         </Stack>
