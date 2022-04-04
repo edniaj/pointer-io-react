@@ -16,9 +16,10 @@ import JobCreate from './component/JobCreate/JobCreate'
 export const loginContext = createContext(null)
 export const tagOptionContext = createContext(null)
 
-function App () {
+function App() {
   const [login, setLogin] = useState(false)
-  const [jobOption, setJobOption] = useState([
+
+  const jobOption = [
     "Engineering & Technology",
     "Sales, Service & Support",
     "Marketing & Communications",
@@ -38,8 +39,8 @@ function App () {
     "Software Developer",
     "Web Developer",
     "Security Developer"
-  ])
-  const [programmingLanguage, setProgrammingLanguage] = useState([
+  ]
+  const programmingLanguage = [
     "Python",
     "Java",
     'JavaScript',
@@ -75,8 +76,9 @@ function App () {
     'Classic Visual Vasic',
     'Groovy',
     'Fortran'
-  ])
-  const [framework, setFramework] = useState([
+  ]
+
+  const framework = [
     'Ruby on Rails',
     '.NET Core',
     'Django',
@@ -126,15 +128,17 @@ function App () {
     'Voca',
     'Popper.Js',
     'Multiple.Js'
-  ])
+  ]
 
   return (
     <div className='App'>
       <BrowserRouter>
         <loginContext.Provider value={{ login, setLogin }}>
-          <tagOptionContext.Provider value={{ jobOption, setJobOption
-          ,programmingLanguage, setProgrammingLanguage,
-          framework, setFramework }}>
+          <tagOptionContext.Provider value={{
+            jobOption,
+            programmingLanguage,
+            framework
+          }}>
             {login && <Navbar />}
             <Routes>
               <Route path='/' element={<Home />} />
@@ -153,7 +157,7 @@ function App () {
           </tagOptionContext.Provider>
         </loginContext.Provider>
       </BrowserRouter>
-    </div>
+    </div >
   )
 }
 

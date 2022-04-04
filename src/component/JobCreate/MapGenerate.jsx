@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import L from "leaflet";
 import * as ELG from "esri-leaflet-geocoder";
-import { Map, TileLayer, MapContainer } from "react-leaflet";
-
-// Credits to : https://codesandbox.io/s/2wy7v2orwr?file=/src/Map.css 
+import { Map, TileLayer } from "react-leaflet";
+import "./Map.css";
 
 // import marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -21,11 +20,8 @@ class MapComp extends Component {
     const searchControl = new ELG.Geosearch().addTo(map);
     const results = new L.LayerGroup().addTo(map);
 
-    searchControl.on("results", function(data) {
+    searchControl.on("results", function (data) {
       results.clearLayers();
-      console.log(data)
-      console.log(data['latlng'])
-      console.log(data['text'])
       for (let i = data.results.length - 1; i >= 0; i--) {
         results.addLayer(L.marker(data.results[i].latlng));
       }
@@ -35,25 +31,22 @@ class MapComp extends Component {
   render() {
     const center = [37.7833, -122.4167];
     return (
-        <>
-        
       <Map
-        style={{ height: "50vh", width:"50vw" }}
+        style={{ height: '50vh', minWidth: 600, border:'1px solid black', marginBottom:100, width:'75%', marginLeft:0, marginRight:0}}
         center={center}
-        zoom="10"
+        zoom="13"
         ref={m => {
           this.leafletMap = m;
         }}
       >
         <TileLayer
           url={"https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}"}
-          id= {'mapbox/streets-v11'}
-          accessToken= {'pk.eyJ1IjoidGFuYWhnYW8iLCJhIjoiY2wxa2Jtdmk1MHY5NTNqcnA5cWw5b2FraiJ9.HRQ8_J8mk3OLQ3umXKSuRA'}
+          id={'mapbox/streets-v11'}
+          accessToken={'pk.eyJ1IjoidGFuYWhnYW8iLCJhIjoiY2wxa2Jtdmk1MHY5NTNqcnA5cWw5b2FraiJ9.HRQ8_J8mk3OLQ3umXKSuRA'}
         />
-      
+
         <div className="pointer" />
       </Map>
-      </>
     );
   }
 }

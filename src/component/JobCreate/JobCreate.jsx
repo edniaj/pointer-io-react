@@ -24,12 +24,19 @@ import Stack from '@mui/material/Stack'
 import { useNavigate } from 'react-router-dom'
 import MapComp from './MapGenerate'
 import { tagOptionContext } from '../../App'
+import { createContext } from 'react'
 
-function JobCreate () {
+
+export const locationContext = createContext(null)
+
+function JobCreate() {
   const [formData, setFormData] = useState({
     jobDescription: ''
   })
-  const [selectOption, setSelectOption] = useState([])
+  const [selectJob, setSelectJob] = useState([])
+  const [selectProgrammingLanguage, setSelectProgrammingLanguage] = useState([])
+  const [selectFramework, setSelectFramework] = useState([])
+
 
   // handleInput will handle regular form data
   const handleInput = e => {
@@ -40,10 +47,8 @@ function JobCreate () {
   }
 
   ////////
-  let { tagOption, setTagOption } = useContext(tagOptionContext)
-  const top100Films = [
-    'a','b','c'
-  ]
+
+  const { jobOption, programmingLanguage, framework } = useContext(tagOptionContext)
 
   ////////
 
@@ -120,9 +125,7 @@ function JobCreate () {
               disabled
             ></OutlinedInput>
           </FormControl>
-        </div>
 
-        <div>
           <FormControl
             sx={{
               bgcolor: 'background.paper',
@@ -154,28 +157,77 @@ function JobCreate () {
               onChange={handleInput}
             ></OutlinedInput>
           </FormControl>
+
           <Autocomplete
             multiple
             id='multiple-limit-tags'
-            options={top100Films}
-            value={selectOption}
-            onChange={ (e,newValue) =>{ 
-              if (!selectOption.includes(newValue)) setSelectOption(newValue)
+            options={jobOption}
+            value={selectJob}
+            freeSolo
+            onChange={(e, newValue) => {
+              setSelectJob(newValue)
             }}
             defaultValue={[]}
             renderInput={params => (
               <TextField
                 {...params}
-                label='limitTags'
-                placeholder='Favorites'
+                label='Job Title'
+                placeholder='Job title ( Select 1 or more )'
               />
             )}
             sx={{ width: '500px' }}
           />
-        </div>
-      </Stack>
 
-      <MapComp />
+          <Autocomplete
+            multiple
+            id='multiple-limit-tags'
+            options={framework}
+            value={selectFramework}
+            freeSolo
+            onChange={(e, newValue) => {
+              setSelectFramework(newValue)
+            }}
+            defaultValue={[]}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label='Frameworks'
+                placeholder='Frameworks ( Select 1 or more )'
+              />
+            )}
+            sx={{ width: '500px' }}
+          />
+
+
+          <Autocomplete
+            multiple
+            id='multiple-limit-tags'
+            options={programmingLanguage}
+            value={selectProgrammingLanguage}
+            freeSolo
+            onChange={(e, newValue) => {
+              setSelectProgrammingLanguage(newValue)
+            }}
+            defaultValue={[]}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label='Programming language'
+                placeholder='Programming langauge ( 1 or more )'
+              />
+            )}
+            sx={{ width: '500px' }}
+          />
+
+        </div>
+      </Stack >
+      
+
+        <MapComp sx={{ width: '600px' }} />
+
+      
+
+
     </>
   )
 }
