@@ -11,10 +11,10 @@ import Profile from './component/Profile'
 import { createContext, useState } from 'react';
 import Navbar from './component/Navbar';
 import JobEdit from './component/JobEdit';
-import JobCreate from './component/JobCreate';
+import JobCreate from './component/JobCreate/JobCreate';
 
 export const loginContext = createContext(null)
-
+export const tagOptionContext = createContext(null)
 
 
 function App() {
