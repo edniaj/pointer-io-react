@@ -27,7 +27,7 @@ import { tagOptionContext } from '../../App'
 import { createContext } from 'react'
 
 
-export const locationContext = createContext(null)
+
 
 function JobCreate() {
   const [formData, setFormData] = useState({
@@ -36,7 +36,7 @@ function JobCreate() {
   const [selectJob, setSelectJob] = useState([])
   const [selectProgrammingLanguage, setSelectProgrammingLanguage] = useState([])
   const [selectFramework, setSelectFramework] = useState([])
-
+  const [location, setLocation] = useState([1.2931213,103.8498238]) //Location set at cityhall
 
   // handleInput will handle regular form data
   const handleInput = e => {
@@ -180,7 +180,7 @@ function JobCreate() {
 
           <Autocomplete
             multiple
-            id='multiple-limit-tags'
+            id='multiple-tags-framework'
             options={framework}
             value={selectFramework}
             freeSolo
@@ -201,7 +201,7 @@ function JobCreate() {
 
           <Autocomplete
             multiple
-            id='multiple-limit-tags'
+            id='multiple-tags-programminglanguage'
             options={programmingLanguage}
             value={selectProgrammingLanguage}
             freeSolo
@@ -221,11 +221,11 @@ function JobCreate() {
 
         </div>
       </Stack >
-      
-
-        <MapComp sx={{ width: '600px' }} />
 
       
+        <MapComp  value={{location,setLocation}}/>
+      
+
 
 
     </>

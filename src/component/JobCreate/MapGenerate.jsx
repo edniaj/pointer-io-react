@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import L from "leaflet";
 import * as ELG from "esri-leaflet-geocoder";
 import { Map, TileLayer } from "react-leaflet";
 import "./Map.css";
+
 
 // import marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -14,12 +15,16 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.4.0/dist/images/marker-shadow.png"
 });
 
+
+
 class MapComp extends Component {
+  
   componentDidMount() {
     const map = this.leafletMap.leafletElement;
     const searchControl = new ELG.Geosearch().addTo(map);
     const results = new L.LayerGroup().addTo(map);
 
+    
     searchControl.on("results", function (data) {
       results.clearLayers();
       for (let i = data.results.length - 1; i >= 0; i--) {
@@ -28,11 +33,13 @@ class MapComp extends Component {
     });
   }
 
+  
   render() {
-    const center = [37.7833, -122.4167];
+    let { location, setLocation} = this.props.value
+    const center = location;
     return (
       <Map
-        style={{ height: '50vh', minWidth: 600, border:'1px solid black', marginBottom:100, width:'75%', marginLeft:0, marginRight:0}}
+        style={{ height: '50vh', minWidth: 600, border: '1px solid black', marginBottom: 100, width: '75%', marginLeft: 0, marginRight: 0 }}
         center={center}
         zoom="13"
         ref={m => {
@@ -50,5 +57,5 @@ class MapComp extends Component {
     );
   }
 }
-
+// MapComp.contextType=locationContext
 export default MapComp;

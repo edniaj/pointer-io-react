@@ -71,10 +71,8 @@ function App() {
     'Solidity',
     "SQL",
     'Assembly language',
-    'Swift',
     'Delphi/Object Pascal',
     'Classic Visual Vasic',
-    'Groovy',
     'Fortran'
   ]
 
@@ -89,15 +87,12 @@ function App() {
     'Flask',
     'CakePHP',
     'Larevel',
-    'Meteor',
-    'Koa',
     'Nest.JS',
     'Next.Js',
     'React.JS',
     'React-Native',
     'Strapi',
     'BeeGo',
-    'Symfony',
     'Koa',
     'Iris',
     'Angular',
