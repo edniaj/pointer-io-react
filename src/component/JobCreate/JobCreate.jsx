@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { FormControl, Typography } from '@mui/material'
 import { TextField } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
@@ -23,6 +23,7 @@ import SendIcon from '@mui/icons-material/Send'
 import Stack from '@mui/material/Stack'
 import { useNavigate } from 'react-router-dom'
 import MapComp from './MapGenerate'
+import { tagOptionContext } from '../../App'
 
 function JobCreate () {
   const [formData, setFormData] = useState({
@@ -39,6 +40,7 @@ function JobCreate () {
   }
 
   ////////
+  let { tagOption, setTagOption } = useContext(tagOptionContext)
   const top100Films = [
     'a','b','c'
   ]
