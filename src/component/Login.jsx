@@ -17,7 +17,7 @@ import { useEffect } from 'react'
 function Login() {
   let { login, setLogin } = useContext(loginContext)
   let navigate = useNavigate()
-  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
 
@@ -25,8 +25,8 @@ function Login() {
 
   const handleInput = (e) => {
 
-    if (e.target.name === 'username') {
-      setUsername(e.target.value)
+    if (e.target.name === 'email') {
+      setEmail(e.target.value)
     }
     if (e.target.name === 'password') {
       setPassword(e.target.value)
@@ -36,12 +36,17 @@ function Login() {
     setShowPassword(!showPassword)
   }
   const handlePOST = async () => {
-    await axios.post('http://localhost:3000/login', { username, password })
+    console.log('CLICKING ON POST SUBMIT BUTTON')
+    await axios.post('http://localhost:3005/login', { email, password })
       .then(res => {
+        if (res.data === []) throw Error('User not found')
         console.log(res.data)
         setLogin(true)
-        Cookies.set('username', username, { expires: 7 })
+        const {_id} = res.data[0]
+        console.log(_id)
+        Cookies.set('email', email, { expires: 7 })
         Cookies.set('password', password, { expires: 7 })
+        Cookies.set('_id',_id ,{expires: 7})
       })
       .catch(err => {
         console.log(err.response.data)
@@ -54,7 +59,7 @@ function Login() {
   useEffect(() => {
     let isCancelled = false;
     const handleCookie = async () => {
-      await axios.post('http://localhost:3000/login', { username: Cookies.get('username'), password: Cookies.get('password') })
+      await axios.post('http://localhost:3000/login', { email: Cookies.get('email'), password: Cookies.get('password') })
         .then(res => {
           console.log(res.data)
           if(!isCancelled) setLogin(true)
@@ -70,17 +75,17 @@ function Login() {
     return () => {
       isCancelled = true
     }
-  }, [Cookies.get('username')])
+  }, [Cookies.get('email')])
 
 
 
   return (
     <>
       <FormControl>
-        <InputLabel>Login</InputLabel>
+        <InputLabel>Login email</InputLabel>
         <OutlinedInput
-          value={username}
-          name='username'
+          value={email}
+          name='email'
           onChange={handleInput}
         ></OutlinedInput>
       </FormControl>

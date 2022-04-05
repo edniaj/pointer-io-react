@@ -532,7 +532,7 @@ function Register() {
       }
     }
     // console.log(`Sending data \n ${clone}`)
-    await axios.post('http://localhost:3000/register', clone).then(res => {
+    await axios.post('http://localhost:3005/register', clone).then(res => {
       navigate("../login")
       console.log(res.data)
     }).catch(err => { 

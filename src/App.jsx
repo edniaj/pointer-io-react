@@ -124,6 +124,29 @@ function App() {
     'Popper.Js',
     'Multiple.Js'
   ]
+  const fieldOfStudy = [
+    'Computer Science',
+    'Mathematics',
+    'Applied Mathematics',
+    'Law',
+    'Architecture',
+    'Industrial Design',
+    'Project and Facilities Management',
+    'Biomedical Engineering',
+    'Chemical Engineering',
+    'Civil Engineering',
+    'Electrical Engineering',
+    'Engineering Science',
+    'Environmental Engineering',
+    'Industrial and Systems Engineering',
+    'Materials Science and Engineering',
+    'Mechanical Engineering',
+    'Business Analytics',
+    'Informational Security',
+    'Information Systems',
+    'Computer engineering',
+    'Business Administration',
+  ]
 
   return (
     <div className='App'>
@@ -132,7 +155,8 @@ function App() {
           <tagOptionContext.Provider value={{
             jobOption,
             programmingLanguage,
-            framework
+            framework,
+            fieldOfStudy
           }}>
             {login && <Navbar />}
             <Routes>
