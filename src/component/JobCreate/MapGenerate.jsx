@@ -25,12 +25,12 @@ class MapComp extends Component {
     const map = this.leafletMap.leafletElement
     const searchControl = new ELG.Geosearch().addTo(map)
     const results = new L.LayerGroup().addTo(map)
-    const { location, setLocation } = this.props.value
+    const {  setLocation } = this.props.value
     searchControl.on('results', function (data) {
       results.clearLayers()
       for (let i = data.results.length - 1; i >= 0; i--) {
         setLocation(data.results[i].latlng)
-        results.addLayer(L.marker(location))
+        results.addLayer(L.marker(data.results[i].latlng))
       }
     })
   }

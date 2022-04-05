@@ -26,6 +26,7 @@ import MapComp from './MapGenerate'
 import { tagOptionContext } from '../../App'
 import { createContext } from 'react'
 import axios from 'axios'
+import Cookies from 'js-cookie'
 
 
 function JobCreate () {
@@ -47,8 +48,8 @@ function JobCreate () {
   }
 
   const handlePOST = async () => {
-    console.log(process.env.PORT)
     await axios.post('http://localhost:3005/job-offer/add',{
+      _id: Cookies.get('_id'),
       ...formData,
       jobTags: selectJob,
       programmingLanguage: selectProgrammingLanguage,
