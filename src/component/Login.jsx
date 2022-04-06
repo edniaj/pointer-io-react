@@ -39,14 +39,16 @@ function Login() {
     console.log('CLICKING ON POST SUBMIT BUTTON')
     await axios.post('http://localhost:3005/login', { email, password })
       .then(res => {
-        if (res.data === []) throw Error('User not found')
-        console.log(res.data)
+        if (res.data === [] || undefined) throw Error('User not found')
+        // console.log('res.data = ',res.data)
         setLogin(true)
-        const {_id} = res.data[0]
+        const {_id} = res.data
         console.log(_id)
         Cookies.set('email', email, { expires: 7 })
         Cookies.set('password', password, { expires: 7 })
         Cookies.set('_id',_id ,{expires: 7})
+        console.log('success')
+        navigate('../')
       })
       .catch(err => {
         console.log(err.response.data)

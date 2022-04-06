@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route, useParams, Link, Outlet } from 'react-router-dom'
-import JobEdit from './JobEdit'
+import JobEdit from './JobEdit/JobEdit'
 
 function Job() {
   return (

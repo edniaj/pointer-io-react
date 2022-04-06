@@ -10,7 +10,8 @@ import Register from './component/Register/Register'
 import Profile from './component/Profile'
 import { createContext, useState } from 'react'
 import Navbar from './component/Navbar'
-import JobEdit from './component/JobEdit'
+import JobEdit from './component/JobEdit/JobEdit'
+import JobEditDetail from './component/JobEdit/JobEditDetail'
 import JobCreate from './component/JobCreate/JobCreate'
 
 export const loginContext = createContext(null)
@@ -20,15 +21,6 @@ function App() {
   const [login, setLogin] = useState(false)
 
   const jobOption = [
-    "Engineering & Technology",
-    "Sales, Service & Support",
-    "Marketing & Communications",
-    "Design",
-    "Business Strategy",
-    "Finance",
-    "Legal",
-    "People",
-    "Facilities",
     "Frontend Developer",
     "Backend Developer",
     "Full stack Developer",
@@ -38,7 +30,15 @@ function App() {
     "DevOps Developer",
     "Software Developer",
     "Web Developer",
-    "Security Developer"
+    "Security Developer",
+    "Engineering & Technology",
+    "Design",
+    "Business Strategy",
+    "Finance",
+    "Legal",
+    "Marketing & Communications",
+    "Sales, Service & Support",
+    "People"
   ]
   const programmingLanguage = [
     "Python",
@@ -75,10 +75,11 @@ function App() {
     'Classic Visual Vasic',
     'Fortran'
   ]
-
   const framework = [
     'Ruby on Rails',
     '.NET Core',
+    'MONGO',
+    'NodeJS',
     'Django',
     'ExpressJS',
     'Symfony',
@@ -126,6 +127,10 @@ function App() {
   ]
   const fieldOfStudy = [
     'Computer Science',
+    'Informational Security',
+    'Information Systems',
+    'Computer engineering',
+    'Business Analytics',
     'Mathematics',
     'Applied Mathematics',
     'Law',
@@ -141,10 +146,6 @@ function App() {
     'Industrial and Systems Engineering',
     'Materials Science and Engineering',
     'Mechanical Engineering',
-    'Business Analytics',
-    'Informational Security',
-    'Information Systems',
-    'Computer engineering',
     'Business Administration',
   ]
 
@@ -166,11 +167,16 @@ function App() {
               <Route path='Register' element={<Register />} />
               <Route path='about' element={<About />} />
               <Route path='judge' element={<Judge />} />
-              <Route path='job' element={<Job />}>
+
+              <Route path='job' element={<Job />}>  {/* This is for regular users that are finding job */}
                 <Route path=':id' element={<JobDetails />} />
               </Route>
-              <Route path='job/create' element={<JobCreate />} />
-              <Route path='job/edit' element={<JobEdit />} />
+              <Route path='job/edit' element={<JobEdit />}>  {/* This is for job creators to edit  */}
+                <Route path=':id' element={<JobEditDetail />} /> 
+              </Route>
+              <Route path='job/create' element={<JobCreate />} /> {/* This is for creating new job post*/}
+
+
               <Route element={<Error />} />
             </Routes>
           </tagOptionContext.Provider>

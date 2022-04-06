@@ -48,14 +48,17 @@ function JobCreate () {
   }
 
   const handlePOST = async () => {
+    let timestamp = JSON.stringify((new Date()).getTime()) // Unix timestamp
+
     await axios.post('http://localhost:3005/job-offer/add',{
-      _id: Cookies.get('_id'),
+      creator: Cookies.get('_id'),
       ...formData,
       jobTags: selectJob,
       programmingLanguage: selectProgrammingLanguage,
       framework: selectFramework,
       fieldOfStudy: selectFieldOfstudy,
-      location
+      location,
+      timestamp
     })
   }
 
