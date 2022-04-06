@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material';
 import { Container } from '@mui/material';
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Link, Outlet } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -19,17 +19,10 @@ import { ClassNames } from '@emotion/react';
 import { Checkbox } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useContext } from 'react';
+import { createContext } from 'react';
 
-const theme = createTheme({
-  breakpoints: {
-    values: {
-      mobile: 0,
-      tablet: 640,
-      laptop: 1024,
-      desktop: 1280,
-    },
-  },
-});
+
 const sxContainer = {
   display: 'flex',
   flexDirection: 'row',
@@ -85,11 +78,12 @@ const sxIcon = {
   marginRight: '1em'
 }
 
-let _id = Cookies.get('_id')
+export const jobContext = createContext(null)
 
 function JobEdit() {
-
+  let _id = Cookies.get('_id')
   const [jobOffer, setJobOffer] = useState([])
+  const [displayIndex, setDisplayIndex] = useState(0)
 
   const parseTime = (date) => {
     return (
@@ -103,10 +97,11 @@ function JobEdit() {
 
   const handleDelete = () => {
   }
-  const handleEdit = () => {
+  const handleEdit = (x) => {
+    console.log(x)
   }
   const handleDisplayDetail = () => {
-    
+
   }
   useEffect(() => {
     let isCancelled = false
@@ -123,17 +118,17 @@ function JobEdit() {
 
 
   const listJobOffer = () => {
+
     return (
-      jobOffer.map(x =>
-        <>
+      jobOffer.map((x, index) =>
+        <Fragment key={index}>
           <ListItem
             alignItems="flex-start"
             sx={sxListItem}
-            key={x._id}
             secondaryAction={
               <>
                 <EditIcon sx={sxIcon}
-                  onClick={handleEdit} />
+                  onClick={() => handleEdit(index)} />
                 <DeleteIcon sx={sxIcon}
                   onClick={handleDelete} />
               </>
@@ -155,7 +150,7 @@ function JobEdit() {
               secondary={
                 <React.Fragment>
                   <Typography
-                    sx={{ display: 'block', textOverflow: 'ellipsis' }}
+                    sx={{ display: 'block', textOverflow: 'ellipsis', marginY: '0.2em' }}
                     component="span"
                     variant="body2"
                     color="text.primary"
@@ -163,7 +158,7 @@ function JobEdit() {
                     {parseTime(x.timestamp)}
                   </Typography>
                   <Typography
-                    sx={{ display: 'block', textOverflow: 'ellipsis' }}
+                    sx={{ display: 'block', textOverflow: 'ellipsis', marginY: '0.2em' }}
                     component="span"
                     variant="body2"
                     color="text.primary"
@@ -187,7 +182,7 @@ function JobEdit() {
             />
           </ListItem>
           <Divider variant="inset" component="li" />
-        </>)
+        </Fragment>)
     )
   }
 
@@ -202,9 +197,10 @@ function JobEdit() {
         </Box>
 
         <Box sx={sxDetail}>
-          <Outlet />
+          <jobContext.Provider value={{jobOffer, setJobOffer, displayIndex}}>
+            <Outlet />
+          </jobContext.Provider>
         </Box>
-
       </Box>
 
     </>
