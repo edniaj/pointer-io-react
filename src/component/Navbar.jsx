@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row'
   },
   navbar__right: {
+    display:"flex",
     flexDirection: 'row',
     alignContent: 'flex-end'
   },

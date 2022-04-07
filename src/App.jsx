@@ -153,15 +153,13 @@ function App() {
     <div className='App'>
       <BrowserRouter>
         <loginContext.Provider value={{ login, setLogin }}>
-          <Navbar 
-          />
           <tagOptionContext.Provider value={{
             jobOption,
             programmingLanguage,
             framework,
             fieldOfStudy
           }}>
-            {login && <Navbar />}
+            
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='profile/:id' element={<Profile />} />

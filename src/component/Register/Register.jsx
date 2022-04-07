@@ -698,7 +698,7 @@ function Register () {
     for (let index = 0; index < licenseCount; index++) {
       writeData.push(
         <Fragment key={index}>
-          <Stack direction='row' spacing={2}>
+          <Stack direction='column' spacing={2}>
             <FormControl>
               <InputLabel>Name</InputLabel>{' '}
               {/*i.e. microsoft certified network security */}
@@ -718,7 +718,7 @@ function Register () {
                 onChange={e => handleArray(e, fieldName, index)}
               ></OutlinedInput>
             </FormControl>
-
+            <Stack spacing={2}>
             <FormControl>
               <InputLabel>Credential URL</InputLabel>{' '}
               {/*i.e. microsoft certified network security */}
@@ -737,6 +737,7 @@ function Register () {
                 onChange={e => handleArray(e, fieldName, index)}
               ></OutlinedInput>
             </FormControl>
+            </Stack>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='Start Date'
