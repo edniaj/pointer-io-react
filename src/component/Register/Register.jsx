@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react'
-import { FormControl, Typography } from '@mui/material'
+import { FormControl, FormHelperText, Typography } from '@mui/material'
 import { TextField } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import OutlinedInput from '@mui/material/OutlinedInput'
@@ -14,14 +14,15 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
 import { useEffect } from 'react'
 import { Fab } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import Button from '@mui/material/Button';
-import SendIcon from '@mui/icons-material/Send';
-import Stack from '@mui/material/Stack';
-import {useNavigate } from 'react-router-dom'
+import AddIcon from '@mui/icons-material/Add'
+import LocalizationProvider from '@mui/lab/LocalizationProvider'
+import DatePicker from '@mui/lab/DatePicker'
+import AdapterDateFns from '@mui/lab/AdapterDateFns'
+import Button from '@mui/material/Button'
+import SendIcon from '@mui/icons-material/Send'
+import Stack from '@mui/material/Stack'
+import { useNavigate } from 'react-router-dom'
+
 const axios = require('axios')
 
 const countries = [
@@ -449,40 +450,32 @@ const countries = [
   { code: 'ZW', label: 'Zimbabwe', phone: '263' }
 ]
 
-function Register() {
-
-
+function Register () {
   const [formData, setFormData] = useState({
     education: {
-      0: {
-      }
+      0: {}
     },
     licenseAndCertificate: {
-      0: {
-
-      }
+      0: {}
     },
-    follower:[],
-    following:[],
-    profilePicture:''
+    follower: [],
+    following: [],
+    profilePicture: ''
   })
   const [educationCount, setEducationaCount] = useState(1)
   const [licenseCount, setLicenseCount] = useState(1)
   const [showPassword, setShowPassword] = useState(false)
+
   let navigate = useNavigate()
   // This is to populate education field inside the form
   useEffect(() => {
-    formData['education'][educationCount] = {
-    }
+    formData['education'][educationCount] = {}
   }, [educationCount])
   // this is to populaate the license and certificates field inside the form
 
   useEffect(() => {
-    formData['licenseAndCertificate'][licenseCount] = {
-    }
+    formData['licenseAndCertificate'][licenseCount] = {}
   }, [licenseCount])
-
-
 
   // handleInput will handle regular form data
   const handleInput = e => {
@@ -502,7 +495,6 @@ function Register() {
     let clone = { ...formData }
     clone[fieldName][index][keyName] = dateValue
     setFormData(clone)
-
   }
   const handleCountryCode = e => {
     let value = `(${e.code}) +${e.phone}`
@@ -515,13 +507,12 @@ function Register() {
   const handleShowPassword = () => {
     setShowPassword(!showPassword)
   }
-  const handlePOST = async () => {    
+  const handlePOST = async () => {
     let clone = JSON.parse(JSON.stringify(formData)) // @dev Deep copy because nested object inside form data
     delete clone['education'][educationCount] // Delete buffer
     delete clone['licenseAndCertificate'][licenseCount] // Delete buffer
     // Clean up empty fields
     for (let key in clone['education']) {
-
       if (Object.keys(clone['education'][key]).length === 0) {
         delete clone['education'][key]
       }
@@ -532,16 +523,54 @@ function Register() {
       }
     }
     // console.log(`Sending data \n ${clone}`)
-    await axios.post('http://localhost:3005/register', clone).then(res => {
-      navigate("../login")
-      console.log(res.data)
-    }).catch(err => { 
-      navigate(-1)
-      console.log(err.response.data )
-    })
+    await axios
+      .post('http://localhost:3005/register', clone)
+      .then(res => {
+        navigate('../login')
+        console.log(res.data)
+      })
+      .catch(err => {
+        navigate(-1)
+        console.log(err.response.data)
+      })
   }
 
+  // Form validation
+  const validateEmail = x => {
+    x = x === undefined ? '' : x
+    let isValid = x.match(
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    )
+    return isValid ? false : true // isValid == false implies invalid thus trigger error
+  }
 
+  const validatePassword = x => {
+    x = x === undefined ? '' : x
+    let upperCase = false
+    let lowerCase = false
+    let number = false
+    for (let i of x) {
+      if (/[a-z]/.test(i)) lowerCase = true
+      if (/[A-Z]/.test(i)) upperCase = true
+      if (/[0-9]/.test(i)) number = true
+    }
+    if (x.length >= 8 && x.length <= 16 && lowerCase && upperCase && number) {
+      return false
+    }
+    // at least one uppercase letter, one lowercase letter, one number and one special character: min length 8, max length 16
+    return true
+  }
+
+  const validateString = x => {
+    x = x === undefined ? '' : x
+    if (x.length === 0) {
+      return true
+    }
+    for (let i of x) {
+      if (!/[a-zA-Z]/.test(i)) return true
+    }
+    return false
+  }
   // @dev Helper functions
 
   // Dynamically generate Education field
@@ -551,19 +580,18 @@ function Register() {
     for (let index = 0; index < educationCount; index++) {
       writeData.push(
         <Fragment key={index}>
-          <Stack direction="row" spacing={2}>
+          <Stack direction='row' spacing={2}>
             <div>
-
               <FormControl>
                 <InputLabel>School name</InputLabel>
-                <OutlinedInput
+                <TextField
                   value={formData[fieldName][index]['schoolName']}
                   name='schoolName'
-                  onChange={(e) => handleArray(e, fieldName, index)}
-                ></OutlinedInput>
-
+                  onChange={e => handleArray(e, fieldName, index)}
+                  // error
+                  // helperText=''
+                ></TextField>
               </FormControl>
-
             </div>
             <div>
               <FormControl>
@@ -571,7 +599,7 @@ function Register() {
                 <OutlinedInput
                   value={formData[fieldName][index]['fieldOfStudy']}
                   name='fieldOfStudy'
-                  onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
+                  onChange={e => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
                 ></OutlinedInput>
               </FormControl>
             </div>
@@ -582,7 +610,7 @@ function Register() {
                 <OutlinedInput
                   value={formData[fieldName][index]['levelOfEducation']}
                   name='levelOfEducation'
-                  onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
+                  onChange={e => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
                 ></OutlinedInput>
               </FormControl>
             </div>
@@ -590,24 +618,34 @@ function Register() {
             <div>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
-                  label="Start Date"
+                  label='Start Date'
                   value={formData[fieldName][index]['startDate']}
-                  name="startDate"
-                  onChange={dateValue => handleDate(dateValue, fieldName, 'startDate', index)}
-                  renderInput={(params) => (
-                    <TextField {...params} helperText={params?.inputProps?.placeholder} />
+                  name='startDate'
+                  onChange={dateValue =>
+                    handleDate(dateValue, fieldName, 'startDate', index)
+                  }
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      helperText={params?.inputProps?.placeholder}
+                    />
                   )}
                 />
               </LocalizationProvider>
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
-                  label="End Date"
+                  label='End Date'
                   value={formData[fieldName][index]['endDate']}
-                  name="endDate"
-                  onChange={dateValue => handleDate(dateValue, fieldName, 'endDate', index)}
-                  renderInput={(params) => (
-                    <TextField {...params} helperText={params?.inputProps?.placeholder} />
+                  name='endDate'
+                  onChange={dateValue =>
+                    handleDate(dateValue, fieldName, 'endDate', index)
+                  }
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      helperText={params?.inputProps?.placeholder}
+                    />
                   )}
                 />
               </LocalizationProvider>
@@ -619,7 +657,7 @@ function Register() {
                 <OutlinedInput
                   value={formData[fieldName][index]['description']}
                   name='description'
-                  onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
+                  onChange={e => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
                 ></OutlinedInput>
               </FormControl>
             </div>
@@ -636,85 +674,101 @@ function Register() {
     for (let index = 0; index < licenseCount; index++) {
       writeData.push(
         <Fragment key={index}>
-          <Stack direction="row" spacing={2}>
-
+          <Stack direction='row' spacing={2}>
             <FormControl>
-              <InputLabel>Name</InputLabel> {/*i.e. microsoft certified network security */}
+              <InputLabel>Name</InputLabel>{' '}
+              {/*i.e. microsoft certified network security */}
               <OutlinedInput
                 value={formData[fieldName][index]['schoolName']}
                 name='name'
-                onChange={(e) => handleArray(e, fieldName, index)}
+                onChange={e => handleArray(e, fieldName, index)}
               ></OutlinedInput>
             </FormControl>
 
             <FormControl>
-              <InputLabel>Issuing organisation</InputLabel> {/*i.e. microsoft certified network security */}
+              <InputLabel>Issuing organisation</InputLabel>{' '}
+              {/*i.e. microsoft certified network security */}
               <OutlinedInput
                 value={formData[fieldName][index]['issuingOrganisation']}
                 name='issuingOrganisation'
-                onChange={(e) => handleArray(e, fieldName, index)}
+                onChange={e => handleArray(e, fieldName, index)}
               ></OutlinedInput>
             </FormControl>
 
             <FormControl>
-              <InputLabel>Credential URL</InputLabel> {/*i.e. microsoft certified network security */}
+              <InputLabel>Credential URL</InputLabel>{' '}
+              {/*i.e. microsoft certified network security */}
               <OutlinedInput
                 value={formData[fieldName][index]['credentialURL']}
                 name='credentialURL'
-                onChange={(e) => handleArray(e, fieldName, index)}
+                onChange={e => handleArray(e, fieldName, index)}
               ></OutlinedInput>
             </FormControl>
             <FormControl>
-              <InputLabel>Image URL</InputLabel> {/*i.e. microsoft certified network security */}
+              <InputLabel>Image URL</InputLabel>{' '}
+              {/*i.e. microsoft certified network security */}
               <OutlinedInput
                 value={formData[fieldName][index]['imageUrl']}
                 name='imageUrl'
-                onChange={(e) => handleArray(e, fieldName, index)}
+                onChange={e => handleArray(e, fieldName, index)}
               ></OutlinedInput>
             </FormControl>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
-                label="Start Date"
+                label='Start Date'
                 value={formData[fieldName][index]['startDate']}
-                name="startDate"
-                onChange={dateValue => handleDate(dateValue, fieldName, 'startDate', index)}
-                renderInput={(params) => (
-                  <TextField {...params} helperText={params?.inputProps?.placeholder} />
+                name='startDate'
+                onChange={dateValue =>
+                  handleDate(dateValue, fieldName, 'startDate', index)
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    helperText={params?.inputProps?.placeholder}
+                  />
                 )}
               />
             </LocalizationProvider>
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
-                label="End Date"
+                label='End Date'
                 value={formData[fieldName][index]['endDate']}
-                name="endDate"
-                onChange={dateValue => handleDate(dateValue, fieldName, 'endDate', index)}
-                renderInput={(params) => (
-                  <TextField {...params} helperText={params?.inputProps?.placeholder} />
+                name='endDate'
+                onChange={dateValue =>
+                  handleDate(dateValue, fieldName, 'endDate', index)
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    helperText={params?.inputProps?.placeholder}
+                  />
                 )}
               />
             </LocalizationProvider>
           </Stack>
-
-        </Fragment >
+        </Fragment>
       )
     }
     return writeData
   }
 
-
-
   return (
     <div>
       <div>
-        <FormControl>
-          <InputLabel>Email</InputLabel>
-          <OutlinedInput
+        <FormControl sx={{ margin: '2em' }}>
+          {/* <InputLabel>Email</InputLabel> */}
+          <TextField
+            label='Email'
             value={formData['email']}
             name='email'
             onChange={handleInput}
-          ></OutlinedInput>
+            error={validateEmail(formData['email'])}
+            helperText={
+              validateEmail(formData['email']) &&
+              'Please enter a valid email address'
+            }
+          ></TextField>
         </FormControl>
       </div>
       <div>
@@ -728,6 +782,7 @@ function Register() {
             name='password'
             onChange={handleInput}
             id='password'
+            error={validatePassword(formData['password'])}
             endAdornment={
               <IconButton onClick={handleShowPassword} edge='end'>
                 {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -735,6 +790,10 @@ function Register() {
             }
             label='Password'
           ></OutlinedInput>
+          <FormHelperText sx={{ color: 'indianred' }}>
+            {validatePassword(formData['password']) &&
+              'Password should consist 8-16 characters, lowercase, uppercase and a number'}
+          </FormHelperText>
         </FormControl>
       </div>
       <div>
@@ -745,13 +804,23 @@ function Register() {
             name='firstName'
             onChange={handleInput}
             value={formData['firstName']}
+            error={validateString(formData['firstName'])}
+            helperText={
+              validateString(formData['firstName']) &&
+              'Field must consist at least a character'
+            }
           ></TextField>
           <TextField
             variant='outlined'
             label='Last name'
-            name='laststName'
+            name='lastName'
             onChange={handleInput}
             value={formData['lastName']}
+            error={validateString(formData['lastName'])}
+            helperText={
+              validateString(formData['lastName']) &&
+              'Field must consist at least a character'
+            }
           ></TextField>
         </FormControl>
       </div>
@@ -760,43 +829,54 @@ function Register() {
       </div>
 
       <div>
-        <Autocomplete
-          id='country-select-demo'
-          sx={{ width: 300 }}
-          options={countries}
-          name='countryCode'
-          onChange={(value, event) => {
-            handleCountryCode(event)
-          }}
-          autoHighlight
-          getOptionLabel={option => option.label}
-          renderOption={(props, option) => (
-            <Box
-              component='li'
-              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-              {...props}
-            >
-              <img
-                loading='lazy'
-                width='20'
-                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                alt=''
+        <FormControl
+        >
+          <Autocomplete
+            id='country-select-demo'
+
+            sx={{ width: 300 }}
+            options={countries}
+            name='countryCode'
+            onChange={(value, event) => {
+              handleCountryCode(event)
+            }}
+            autoHighlight
+            getOptionLabel={option => option.label}
+            renderOption={(props, option) => (
+              <Box
+                component='li'
+                sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                {...props}
+              >
+                <img
+                  loading='lazy'
+                  width='20'
+                  src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                  srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                  alt=''
+                />
+                {option.label} ({option.code}) +{option.phone}
+              </Box>
+            )}
+            renderInput={params => (
+              <TextField
+                error={formData['countryCode']===undefined ? true : false}
+                {...params}
+                label='Choose a country'
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: 'new-password' // disable autocomplete and autofill
+                }}
               />
-              {option.label} ({option.code}) +{option.phone}
-            </Box>
-          )}
-          renderInput={params => (
-            <TextField
-              {...params}
-              label='Choose a country'
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: 'new-password' // disable autocomplete and autofill
-              }}
-            />
-          )}
-        />
+            )
+          }
+          />
+          <FormHelperText sx={{color: 'indianred'}}>
+            {formData['countryCode'] ? "" :"You must select a country"}
+          </FormHelperText>
+        </FormControl>
+
+
         <InputLabel>Country code</InputLabel>
         <OutlinedInput value={formData['countryCode']} disabled />
         <FormControl>
@@ -839,29 +919,34 @@ function Register() {
         </FormControl>
       </div>
 
-      <Typography variant="h4">Education</Typography>
+      <Typography variant='h4'>Education</Typography>
       {populateEducation()}
-      <Fab color="primary" aria-label="add" onClick={() => setEducationaCount(educationCount + 1)}>
+      <Fab
+        color='primary'
+        aria-label='add'
+        onClick={() => setEducationaCount(educationCount + 1)}
+      >
         <AddIcon />
       </Fab>
 
-      <Typography variant="h4">License and certificates</Typography>
+      <Typography variant='h4'>License and certificates</Typography>
       {populateLicense()}
-      <Fab color="primary" aria-label="add" onClick={() => setLicenseCount(licenseCount + 1)}>
+      <Fab
+        color='primary'
+        aria-label='add'
+        onClick={() => setLicenseCount(licenseCount + 1)}
+      >
         <AddIcon />
       </Fab>
 
-      <Button variant="contained" endIcon={<SendIcon />} onClick={handlePOST}>
+      <Button variant='contained' endIcon={<SendIcon />} onClick={handlePOST}>
         Submit
       </Button>
-
     </div>
   )
 }
 
 export default Register
-
-
 
 /*
 Master plan
