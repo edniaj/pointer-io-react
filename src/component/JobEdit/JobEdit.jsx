@@ -26,7 +26,7 @@ import { createContext } from 'react';
 const sxContainer = {
   display: 'flex',
   flexDirection: 'row',
-  height: '80vh',
+  height: 'auto',
   marginTop: '10vh'
 }
 const sxMenu = {
@@ -127,8 +127,10 @@ function JobEdit() {
             sx={sxListItem}
             secondaryAction={
               <>
-                <EditIcon sx={sxIcon}
-                  onClick={() => handleEdit(index)} />
+                <Link to={`./${x._id}`} style={{textDecoration:'none',color:'black'}}>
+                  <EditIcon sx={sxIcon}
+                    onClick={() => handleEdit(index)} />
+                </Link>
                 <DeleteIcon sx={sxIcon}
                   onClick={handleDelete} />
               </>
@@ -197,7 +199,7 @@ function JobEdit() {
         </Box>
 
         <Box sx={sxDetail}>
-          <jobContext.Provider value={{jobOffer, setJobOffer, displayIndex}}>
+          <jobContext.Provider value={{ jobOffer, setJobOffer, displayIndex }}>
             <Outlet />
           </jobContext.Provider>
         </Box>

@@ -9,6 +9,7 @@ import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.js'
 
 import './Map.css'
 import { FormControl, OutlinedInput } from '@mui/material'
+import { Co2Sharp } from '@mui/icons-material'
 
 // import marker icons
 delete L.Icon.Default.prototype._getIconUrl
@@ -21,11 +22,35 @@ L.Icon.Default.mergeOptions({
 })
 
 class MapComp extends Component {
-  componentDidMount () {
+  constructor(props) {
+    super(props);
+    this.state = {
+      latitude: this.props.value.location.lat,
+      longitude: this.props.value.location.lng,
+      emptyList: Object.keys(this.props.value.location).includes('0'), // Check if MapComp receive props
+      formEdited: false
+    }
+    const changeEditState = (value) => {
+      this.setState(
+        {
+          ...this.state,
+          formEdited: value
+        }
+      )
+    }
+  }
+
+
+
+  componentDidMount() {
+
     const map = this.leafletMap.leafletElement
     const searchControl = new ELG.Geosearch().addTo(map)
     const results = new L.LayerGroup().addTo(map)
-    const {  setLocation } = this.props.value
+    const { setLocation } = this.props.value
+    const center = this.state.emptyList ? [37.7833, -122.4167] : [this.state.latitude, this.state.longitude]
+    results.addLayer(L.marker(center))
+    console.log(this.state.formEdited)
     searchControl.on('results', function (data) {
       results.clearLayers()
       for (let i = data.results.length - 1; i >= 0; i--) {
@@ -35,12 +60,12 @@ class MapComp extends Component {
     })
   }
 
-  render () {
-    const center = [37.7833, -122.4167]
+  render() {
+    const center = this.state.emptyList ? [37.7833, -122.4167] : [this.state.latitude, this.state.longitude]
 
     return (
       <>
-      <FormControl
+        <FormControl
           sx={{
             bgcolor: 'background.paper',
             boxShadow: 1,
@@ -61,7 +86,7 @@ class MapComp extends Component {
         <Map
           style={{ height: '50vh' }}
           center={center}
-          zoom='10'
+          zoom="15"
           ref={m => {
             this.leafletMap = m
           }}

@@ -28,6 +28,7 @@
     "mongodb": "^4.5.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-hook-form": "^7.29.0",
     "react-leaflet": "^2.2.1",
     "react-router-dom": "^6.2.2",
     "react-script-tag": "^1.1.2",

@@ -21,12 +21,14 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { jobContext } from './JobEdit'
-
-
+import { tagOptionContext } from '../../App'
+import MapComp from '../JobCreate/MapGenerate'
+import { Container } from '@mui/material'
+import { useForm, Controller } from "react-hook-form";
 
 
 
@@ -455,413 +457,316 @@ const countries = [
   { code: 'ZW', label: 'Zimbabwe', phone: '263' }
 ]
 
+const sxField = {
+  bgcolor: 'background.paper',
+  boxShadow: 1,
+  borderRadius: 2,
+  minWidth: 700,
+  marginTop: "2em"
+}
+
+const sxAutocomplete = {
+  bgcolor: 'background.paper',
+  boxShadow: 1,
+  borderRadius: 2,
+  minWidth: 700,
+  marginTop: "2em",
+  height: "5em"
+}
+
 function JobEditDetail() {
-  const { jobOffer, setJobOffer, displayIndex } = useContext(jobContext)
-  const [formData, setFormData] = useState({
-    education: {
-      0: {
-      }
-    },
-    licenseAndCertificate: {
-      0: {
-
-      }
-    },
-    follower: [],
-    following: [],
-    profilePicture: ''
-  })
-  const [educationCount, setEducationaCount] = useState(1)
-  const [licenseCount, setLicenseCount] = useState(1)
-  const [showPassword, setShowPassword] = useState(false)
-  let navigate = useNavigate()
-  // This is to populate education field inside the form
-  useEffect(() => {
-    formData['education'][educationCount] = {
-    }
-  }, [educationCount])
-  // this is to populaate the license and certificates field inside the form
-
-  useEffect(() => {
-    formData['licenseAndCertificate'][licenseCount] = {
-    }
-  }, [licenseCount])
+  const [formData, setFormData] = useState([])
+  const [selectJob, setSelectJob] = useState([])
+  const [selectProgrammingLanguage, setSelectProgrammingLanguage] = useState([])
+  const [selectFramework, setSelectFramework] = useState([])
+  const [selectFieldOfstudy, setSelectFieldOfStudy] = useState([])
+  const [location, setLocation] = useState([1.2931213, 103.8498238]) //Location set at cityhall
+  const { pathname } = useLocation()
+  const { jobOption, programmingLanguage, framework, fieldOfStudy } = useContext(tagOptionContext)
 
 
-
-  // handleInput will handle regular form data
+  let _id = pathname.replace('/job/edit/', '')
+  const handlePOST = async () => {
+    let timestamp = JSON.stringify(new Date().getTime()) // Unix timestamp
+    await axios.put(`http://localhost:3005/job-offer/edit/${_id}`, {
+      creator: Cookies.get('_id'),
+      ...formData,
+      jobTags: selectJob,
+      programmingLanguage: selectProgrammingLanguage,
+      framework: selectFramework,
+      fieldOfStudy: selectFieldOfstudy,
+      location,
+      timestamp
+    })
+  }
   const handleInput = e => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     })
   }
-  // Mainly handles fields that are arrays and have to be managed dynamically
-  const handleArray = (e, fieldName, index) => {
-    let clone = { ...formData }
-    clone[fieldName][index][e.target.name] = e.target.value
-    setFormData(clone)
+  const debug = () => {
+    return (<>
+      {selectJob}
+      {selectProgrammingLanguage}
+      {selectFieldOfstudy}
+      {selectFramework}
+      {JSON.stringify(location)}
+    </>
+    )
   }
-  // Handles Date. Date form field does not emit event.
-  const handleDate = (dateValue, fieldName, keyName, index) => {
-    let clone = { ...formData }
-    clone[fieldName][index][keyName] = dateValue
-    setFormData(clone)
-
-  }
-  const handleCountryCode = e => {
-    let value = `(${e.code}) +${e.phone}`
-    setFormData({
-      ...formData,
-      countryCode: value,
-      country: e.label
-    })
-  }
-  const handleShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
-  const handlePOST = async () => {
-    let clone = JSON.parse(JSON.stringify(formData)) // @dev Deep copy because nested object inside form data
-    delete clone['education'][educationCount] // Delete buffer
-    delete clone['licenseAndCertificate'][licenseCount] // Delete buffer
-    // Clean up empty fields
-    for (let key in clone['education']) {
-
-      if (Object.keys(clone['education'][key]).length === 0) {
-        delete clone['education'][key]
+  useEffect(() => {
+    let isCancelled = false
+    axios.get(`http://localhost:3005/job-offer/${_id}`).then(x => {
+      if (!isCancelled) {
+        let res = x.data
+        setFormData(res)
+        setSelectJob(res.jobTags)
+        setSelectProgrammingLanguage(res.programmingLanguage)
+        setSelectFramework(res.framework)
+        setSelectFieldOfStudy(res.fieldOfStudy)
+        setLocation(res.location)
       }
-    }
-    for (let key in clone['licenseAndCertificate']) {
-      if (Object.keys(clone['licenseAndCertificate'][key]).length === 0) {
-        delete clone['licenseAndCertificate'][key]
-      }
-    }
-    // console.log(`Sending data \n ${clone}`)
-    await axios.post('http://localhost:3005/register', clone).then(res => {
-      navigate("../login")
-      console.log(res.data)
-    }).catch(err => {
-      navigate(-1)
-      console.log(err.response.data)
     })
-  }
-
-
-  // @dev Helper functions
-
-  // Dynamically generate Education field
-  const populateEducation = () => {
-    let writeData = []
-    let fieldName = 'education'
-    for (let index = 0; index < educationCount; index++) {
-      writeData.push(
-        <Fragment key={index}>
-          <Stack direction="row" spacing={2}>
-            <div>
-
-              <FormControl>
-                <InputLabel>School name</InputLabel>
-                <OutlinedInput
-                  value={formData[fieldName][index]['schoolName']}
-                  name='schoolName'
-                  onChange={(e) => handleArray(e, fieldName, index)}
-                ></OutlinedInput>
-
-              </FormControl>
-
-            </div>
-            <div>
-              <FormControl>
-                <InputLabel>Field of study</InputLabel>
-                <OutlinedInput
-                  value={formData[fieldName][index]['fieldOfStudy']}
-                  name='fieldOfStudy'
-                  onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
-                ></OutlinedInput>
-              </FormControl>
-            </div>
-
-            <div>
-              <FormControl>
-                <InputLabel>Level of education</InputLabel>
-                <OutlinedInput
-                  value={formData[fieldName][index]['levelOfEducation']}
-                  name='levelOfEducation'
-                  onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
-                ></OutlinedInput>
-              </FormControl>
-            </div>
-
-            <div>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label="Start Date"
-                  value={formData[fieldName][index]['startDate']}
-                  name="startDate"
-                  onChange={dateValue => handleDate(dateValue, fieldName, 'startDate', index)}
-                  renderInput={(params) => (
-                    <TextField {...params} helperText={params?.inputProps?.placeholder} />
-                  )}
-                />
-              </LocalizationProvider>
-
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label="End Date"
-                  value={formData[fieldName][index]['endDate']}
-                  name="endDate"
-                  onChange={dateValue => handleDate(dateValue, fieldName, 'endDate', index)}
-                  renderInput={(params) => (
-                    <TextField {...params} helperText={params?.inputProps?.placeholder} />
-                  )}
-                />
-              </LocalizationProvider>
-            </div>
-
-            <div>
-              <FormControl>
-                <InputLabel>Description</InputLabel>
-                <OutlinedInput
-                  value={formData[fieldName][index]['description']}
-                  name='description'
-                  onChange={(e) => handleArray(e, fieldName, index)} //handleArray( event, fieldName inside formData, index)
-                ></OutlinedInput>
-              </FormControl>
-            </div>
-          </Stack>
-        </Fragment>
-      )
+    return () => {
+      isCancelled = true
     }
-
-    return <>{writeData}</>
-  }
-  const populateLicense = () => {
-    let writeData = []
-    let fieldName = 'licenseAndCertificate'
-    for (let index = 0; index < licenseCount; index++) {
-      writeData.push(
-        <Fragment key={index}>
-          <Stack direction="row" spacing={2}>
-
-            <FormControl>
-              <InputLabel>Name</InputLabel> {/*i.e. microsoft certified network security */}
-              <OutlinedInput
-                value={formData[fieldName][index]['schoolName']}
-                name='name'
-                onChange={(e) => handleArray(e, fieldName, index)}
-              ></OutlinedInput>
-            </FormControl>
-
-            <FormControl>
-              <InputLabel>Issuing organisation</InputLabel> {/*i.e. microsoft certified network security */}
-              <OutlinedInput
-                value={formData[fieldName][index]['issuingOrganisation']}
-                name='issuingOrganisation'
-                onChange={(e) => handleArray(e, fieldName, index)}
-              ></OutlinedInput>
-            </FormControl>
-
-            <FormControl>
-              <InputLabel>Credential URL</InputLabel> {/*i.e. microsoft certified network security */}
-              <OutlinedInput
-                value={formData[fieldName][index]['credentialURL']}
-                name='credentialURL'
-                onChange={(e) => handleArray(e, fieldName, index)}
-              ></OutlinedInput>
-            </FormControl>
-            <FormControl>
-              <InputLabel>Image URL</InputLabel> {/*i.e. microsoft certified network security */}
-              <OutlinedInput
-                value={formData[fieldName][index]['imageUrl']}
-                name='imageUrl'
-                onChange={(e) => handleArray(e, fieldName, index)}
-              ></OutlinedInput>
-            </FormControl>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="Start Date"
-                value={formData[fieldName][index]['startDate']}
-                name="startDate"
-                onChange={dateValue => handleDate(dateValue, fieldName, 'startDate', index)}
-                renderInput={(params) => (
-                  <TextField {...params} helperText={params?.inputProps?.placeholder} />
-                )}
-              />
-            </LocalizationProvider>
-
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="End Date"
-                value={formData[fieldName][index]['endDate']}
-                name="endDate"
-                onChange={dateValue => handleDate(dateValue, fieldName, 'endDate', index)}
-                renderInput={(params) => (
-                  <TextField {...params} helperText={params?.inputProps?.placeholder} />
-                )}
-              />
-            </LocalizationProvider>
-          </Stack>
-
-        </Fragment >
-      )
-    }
-    return writeData
-  }
-
-
+  }, [_id])
 
   return (
-    <div>
-      <div>
-        <FormControl>
-          <InputLabel>Email</InputLabel>
-          <OutlinedInput
-            value={formData['email']}
-            name='email'
-            onChange={handleInput}
-          ></OutlinedInput>
-        </FormControl>
-      </div>
-      <div>
-        <FormControl>
-          {' '}
-          {/*password*/}
-          <InputLabel> Password</InputLabel>
-          <OutlinedInput
-            type={showPassword ? 'text' : 'password'}
-            value={formData['password']}
-            name='password'
-            onChange={handleInput}
-            id='password'
-            endAdornment={
-              <IconButton onClick={handleShowPassword} edge='end'>
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            }
-            label='Password'
-          ></OutlinedInput>
-        </FormControl>
-      </div>
-      <div>
-        <FormControl>
-          <TextField
-            variant='outlined'
-            label='First name'
-            name='firstName'
-            onChange={handleInput}
-            value={formData['firstName']}
-          ></TextField>
-          <TextField
-            variant='outlined'
-            label='Last name'
-            name='laststName'
-            onChange={handleInput}
-            value={formData['lastName']}
-          ></TextField>
-        </FormControl>
-      </div>
-      <div>
-        <FormControl></FormControl>
-      </div>
+    <>
 
-      <div>
-        <Autocomplete
-          id='country-select-demo'
-          sx={{ width: 300 }}
-          options={countries}
-          name='countryCode'
-          onChange={(value, event) => {
-            handleCountryCode(event)
-          }}
-          autoHighlight
-          getOptionLabel={option => option.label}
-          renderOption={(props, option) => (
-            <Box
-              component='li'
-              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-              {...props}
-            >
-              <img
-                loading='lazy'
-                width='20'
-                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                alt=''
-              />
-              {option.label} ({option.code}) +{option.phone}
-            </Box>
-          )}
-          renderInput={params => (
-            <TextField
-              {...params}
-              label='Choose a country'
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: 'new-password' // disable autocomplete and autofill
-              }}
-            />
-          )}
-        />
-        <InputLabel>Country code</InputLabel>
-        <OutlinedInput value={formData['countryCode']} disabled />
-        <FormControl>
-          <InputLabel>Contact number</InputLabel>
-          <OutlinedInput
-            value={formData['contactNumber']}
-            onChange={handleInput}
-            name='contactNumber'
-          ></OutlinedInput>
-        </FormControl>
-      </div>
-      <div>
-        <FormControl>
-          <FormLabel id='demo-radio-buttons-group-label'>
-            Looking for job ?
-          </FormLabel>
-          <RadioGroup
-            aria-labelledby='demo-radio-buttons-group-label'
-            defaultValue='Yes'
-            name='jobAvailability'
+      <Typography variant='h3'>Edit posting</Typography>
+      <Container>
+
+        <Stack direction='column' spacing={10}>
+          <div
+            sx={{
+              bgcolor: 'background.paper',
+              boxShadow: 1,
+              borderRadius: 2,
+              minWidth: 800
+            }}
           >
-            <FormControlLabel
-              value='Yes'
-              control={<Radio />}
-              label='Yes'
-              name='jobAvailability'
-              onChange={handleInput}
-              checked={formData['jobAvailability'] === 'Yes' ? true : false}
+            <div>
+              <FormControl
+                sx={sxField}
+              >
+
+                <OutlinedInput
+
+                  value={formData['jobTitle'] || ""}
+                  name='jobTitle'
+                  onChange={handleInput}
+                ></OutlinedInput>
+                <InputLabel>Job Title</InputLabel>
+              </FormControl>
+            </div>
+            <div>
+              <FormControl
+                sx={{
+                  bgcolor: 'background.paper',
+                  boxShadow: 1,
+                  borderRadius: 2,
+                  minWidth: 700,
+                  marginTop: "2em"
+                }}
+              >
+
+                <OutlinedInput
+
+                  value={formData['jobDescription'] || ""}
+                  name='jobDescription'
+                  onChange={handleInput}
+                  multiline={true}
+                  rows={10}
+                ></OutlinedInput>
+                <InputLabel>Job description</InputLabel>
+              </FormControl>
+            </div>
+
+            <FormControl
+              sx={sxField}
+            >
+              <OutlinedInput
+                value={formData['organizationName'] || ""}
+                name='organizationName'
+                onChange={handleInput}
+              ></OutlinedInput>
+              <InputLabel>Organization name</InputLabel>
+            </FormControl>
+
+            <FormControl
+              sx={sxField}
+            >
+
+              <OutlinedInput
+                value={formData['organizationImageurl'] || ""}
+                name='organizationImageurl'
+                onChange={handleInput}
+              ></OutlinedInput>
+              <InputLabel>Organization image url</InputLabel>
+            </FormControl>
+
+            <Autocomplete
+              multiple
+              id='multiple-limit-tags'
+              options={jobOption}
+              value={selectJob}
+              freeSolo
+              onChange={(e, newValue) => {
+                setSelectJob(newValue)
+              }}
+              defaultValue={[]}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label='Job tags'
+                  placeholder='Job tags ( Select 1 or more )'
+                />
+              )}
+              sx={sxAutocomplete}
             />
 
-            <FormControlLabel
-              value='No'
-              control={<Radio />}
-              label='No'
-              name='jobAvailability'
-              onChange={handleInput}
-              checked={formData['jobAvailability'] === 'No' ? true : false}
+            <Autocomplete
+              multiple
+              id='multiple-tags-framework'
+              options={framework}
+              value={selectFramework}
+              freeSolo
+              onChange={(e, newValue) => {
+                setSelectFramework(newValue)
+              }}
+              defaultValue={[]}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label='Frameworks'
+                  placeholder='Frameworks ( Select 1 or more )'
+                />
+              )}
+              sx={sxAutocomplete}
             />
-          </RadioGroup>
-        </FormControl>
-      </div>
 
-      <Typography variant="h4">Education</Typography>
-      {populateEducation()}
-      <Fab color="primary" aria-label="add" onClick={() => setEducationaCount(educationCount + 1)}>
-        <AddIcon />
-      </Fab>
+            <Autocomplete
+              multiple
+              id='multiple-tags-programminglanguage'
+              options={programmingLanguage}
+              value={selectProgrammingLanguage}
+              freeSolo
+              onChange={(e, newValue) => {
+                setSelectProgrammingLanguage(newValue)
+              }}
+              defaultValue={[]}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label='Programming language'
+                  placeholder='Programming langauge ( 1 or more )'
+                />
+              )}
+              sx={sxAutocomplete}
+            />
 
-      <Typography variant="h4">License and certificates</Typography>
-      {populateLicense()}
-      <Fab color="primary" aria-label="add" onClick={() => setLicenseCount(licenseCount + 1)}>
-        <AddIcon />
-      </Fab>
+            <Autocomplete
+              multiple
+              id='multiple-tags-fieldofstudy'
+              options={fieldOfStudy}
+              value={selectFieldOfstudy}
+              freeSolo
+              onChange={(e, newValue) => {
+                setSelectFieldOfStudy(newValue)
+              }}
+              defaultValue={[]}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label='Field of study'
+                  placeholder='Field of study ( 1 or more )'
+                />
+              )}
+              sx={sxAutocomplete}
+            />
 
-      <Button variant="contained" endIcon={<SendIcon />} onClick={handlePOST}>
-        Submit
-      </Button>
+            <FormControl
+              sx={sxField}
+            >
+              <OutlinedInput
+                value={formData['postalCode'] || "" }
+                name='postalCode'
+                onChange={handleInput}
+              ></OutlinedInput>
+              <InputLabel>Postal code</InputLabel>
+            </FormControl>
 
-    </div>
+            <div>
+              <FormControl
+                sx={sxField}
+              >
+
+                <OutlinedInput
+                  value={formData['streetAddress'] || ""}
+                  name='streetAddress'
+                  onChange={handleInput}
+                ></OutlinedInput>
+                <InputLabel>Street address</InputLabel>
+              </FormControl>
+
+              <FormControl sx={sxField}>
+                <OutlinedInput
+                  value={formData['blockNumber'] || ""}
+                  name='blockNumber'
+                  placeholder='apt, Suite, Unit, Building, Floor, etc (optional)'
+                  onChange={handleInput}
+                ></OutlinedInput>
+                <InputLabel>Block number / Unit number</InputLabel>
+              </FormControl>
+              <div>
+                <FormControl sx={sxField}>
+                  
+                  <OutlinedInput
+                    value={formData['minPay'] || "" }
+                    name='minPay'
+                    type='number'
+                    placeholder='Minimum pay'
+                    onChange={handleInput}
+                  ></OutlinedInput>
+                  <InputLabel>Minimum pay</InputLabel>
+                </FormControl>
+
+                <FormControl sx={sxField}>
+                  <OutlinedInput
+                    value={formData['maxPay'] || ""}
+                    name='maxPay'
+                    type='number'
+                    placeholder='Maximum pay'
+                    onChange={handleInput}
+                  ></OutlinedInput>
+                  <InputLabel>Maximum pay</InputLabel>
+                </FormControl>
+              </div>
+              <div>
+                <Button
+                  variant='contained'
+                  endIcon={<SendIcon />}
+                  onClick={handlePOST}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Stack>
+
+        <Container sx={{ marginTop: 2, marginBottom: 10 }}>
+          <MapComp value={{ location, setLocation }} />
+        </Container>
+      </Container>
+    </>
   )
 }
 
 export default JobEditDetail
+
+
+
