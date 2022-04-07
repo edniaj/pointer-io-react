@@ -13,6 +13,8 @@ import Navbar from './component/Navbar'
 import JobEdit from './component/JobEdit/JobEdit'
 import JobEditDetail from './component/JobEdit/JobEditDetail'
 import JobCreate from './component/JobCreate/JobCreate'
+import ChatSystem from './component/ChatSystem/ChatSystem'
+import Chat from './component/ChatSystem/Chat'
 
 export const loginContext = createContext(null)
 export const tagOptionContext = createContext(null)
@@ -175,7 +177,9 @@ function App() {
                 <Route path=':id' element={<JobEditDetail />} /> 
               </Route>
               <Route path='job/create' element={<JobCreate />} /> {/* This is for creating new job post*/}
-
+              <Route path='/chat' element={<ChatSystem/>}>
+                <Route path=':id' element={<Chat/>} />  
+              </Route>
 
               <Route element={<Error />} />
             </Routes>

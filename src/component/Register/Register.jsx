@@ -31,6 +31,8 @@ import RemoveIcon from '@mui/icons-material/Remove'
 import { Divider } from '@mui/material'
 const axios = require('axios')
 
+// Add image url later
+
 const countries = [
   { code: 'AD', label: 'Andorra', phone: '376' },
   {
@@ -571,7 +573,7 @@ function Register () {
       return true
     }
     for (let i of x) {
-      if (!/[a-zA-Z]/.test(i)) return true
+      if (!/[a-zA-Z\s]/.test(i)) return true
     }
     return false
   }
@@ -719,24 +721,24 @@ function Register () {
               ></OutlinedInput>
             </FormControl>
             <Stack spacing={2}>
-            <FormControl>
-              <InputLabel>Credential URL</InputLabel>{' '}
-              {/*i.e. microsoft certified network security */}
-              <OutlinedInput
-                value={formData[fieldName][index]['credentialURL']}
-                name='credentialURL'
-                onChange={e => handleArray(e, fieldName, index)}
-              ></OutlinedInput>
-            </FormControl>
-            <FormControl>
-              <InputLabel>Image URL</InputLabel>{' '}
-              {/*i.e. microsoft certified network security */}
-              <OutlinedInput
-                value={formData[fieldName][index]['imageUrl']}
-                name='imageUrl'
-                onChange={e => handleArray(e, fieldName, index)}
-              ></OutlinedInput>
-            </FormControl>
+              <FormControl>
+                <InputLabel>Credential URL</InputLabel>{' '}
+                {/*i.e. microsoft certified network security */}
+                <OutlinedInput
+                  value={formData[fieldName][index]['credentialURL']}
+                  name='credentialURL'
+                  onChange={e => handleArray(e, fieldName, index)}
+                ></OutlinedInput>
+              </FormControl>
+              <FormControl>
+                <InputLabel>Image URL</InputLabel>{' '}
+                {/*i.e. microsoft certified network security */}
+                <OutlinedInput
+                  value={formData[fieldName][index]['imageUrl']}
+                  name='imageUrl'
+                  onChange={e => handleArray(e, fieldName, index)}
+                ></OutlinedInput>
+              </FormControl>
             </Stack>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
@@ -990,7 +992,7 @@ function Register () {
           style={{
             display: 'flex',
             flexDirection: 'row-reverse',
-            marginBottom:50
+            marginBottom: 50
           }}
         >
           <Button
@@ -1021,3 +1023,5 @@ Master plan
   
 
 */
+
+// db.chat.insertOne({participant:[ObjectId("624ed316bed37d50765b291c"), ObjectId("624d1b9455469b89e419d590")]})

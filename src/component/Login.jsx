@@ -39,7 +39,7 @@ function Login () {
       .post('http://localhost:3005/login', { email, password })
       .then(res => {
         if (res.data === [] || undefined) throw Error('User not found')
-        // console.log('res.data = ',res.data)
+        console.log('res.data = ',res.data)
         setLogin(true)
         const { _id } = res.data
         console.log(_id)
