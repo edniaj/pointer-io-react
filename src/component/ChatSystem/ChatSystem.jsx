@@ -1,9 +1,15 @@
 import { Box, Container, Divider, List, Typography } from '@mui/material'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import React, { createContext, Fragment, useEffect, useLayoutEffect, useState } from 'react'
+import { Link, Outlet } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import axios from 'axios'
 import { AirTwoTone } from '@mui/icons-material'
+import { ListItem } from '@mui/material'
+import { ListItemAvatar } from '@mui/material';
+import { ListItemText } from '@mui/material';
+import { Avatar } from '@mui/material'
+import { Badge } from '@mui/material'
+import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
 
 const sxContainer = {
   display: 'flex',
@@ -36,7 +42,7 @@ const sxMenu = {
 const sxDetail = {
   border: 1,
   display: {
-    xs: 'none',
+    // xs: 'none',
     lg: 'block'
   },
   flex: {
@@ -58,62 +64,94 @@ const sxIcon = {
   marginRight: '1em'
 }
 
-const listFriends = () => {}
+export const messageContext = createContext(null)
 
-function ChatSystem () {
+
+function ChatSystem() {
   let _id = Cookies.get('_id')
-  const [chatDetail, setChatDetail] = useState([]) // every chat with a person is a chatId, NOT MESSAGE ID
   const [messageId, setMessageId] = useState([])
-  const [friendId, setFriendId] = useState([])
-  const [friendDetail, setFriendDetail] = useState([])
+  const [cacheData, setCacheData] = useState([])
+
   useEffect(() => {
     let isCancelled = false
-    axios
-      .get(`http://localhost:3005/chat/${_id}`)
+    console.log(_id)
+    axios.get(`http://localhost:3005/messageCache/${_id}`)
       .then(x => {
-        // console.log(x.data[0])
         if (!isCancelled) {
-          let clone = [...friendId]
-          for (let chatInfo of x.data) {
-            for (let friend of chatInfo.participant) {
-              if (friend !== _id) {
-                clone.push(friend)
-              }
-            }
-          }
-          setChatDetail(x.data)
-          setFriendId(clone)
+          setCacheData(x.data)
         }
       })
       .catch(err => console.log(err.response.data))
     return () => {
       isCancelled = true
     }
-  }, [])
-  useEffect(() => {
-    let isCancelled = false
-    if (friendId.length !== 0) {
-      let criteria = {
-        _id: {
-          $in: friendId
-        }
-      }
-      axios.post('http://localhost:3005/person/criteria', criteria).then(x => {
-        if (!isCancelled) setFriendDetail(x.data)
-      })
-    }
-    return () => {
-      isCancelled = true
-    }
-  }, [friendId]) // Load imageUrl from Api
-  useEffect(() => {
-    let isCancelled = false
-  
-    return () => {
-      isCancelled = true
-    }
-  }, [chatDetail])
-  
+  }, [messageId])
+
+  const parseTime = (date) => {
+    return (
+      new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }).format(date)
+    )
+  }
+  const listChat = () => {
+    return (
+      cacheData.map((x) =>
+        <Fragment key={x._id}>
+          <Link to={`./${x.from}`} style={{ textDecoration: 'none', color: 'black' }}>
+            <ListItem
+              alignItems="flex-start"
+              sx={sxListItem}
+              disablePadding
+              onClick={() => console.log('test')}
+            >
+              <ListItemAvatar>
+                <Avatar alt="image not available" src={x.imageUrl}
+                  sx={{ width: "57px", height: "57px", marginTop: "0.25em", marginRight: "1em", marginLeft: "10px" }}
+                />
+              </ListItemAvatar>
+              <ListItemText
+                primary={`${x.firstName} ${x.lastName}`}
+                multiline='true'
+
+                secondary={
+
+                  <React.Fragment>
+
+                    <Typography
+                      sx={{ display: 'block', textOverflow: 'ellipsis', marginY: '0.2em' }}
+                      component="span"
+                      variant="body2"
+                      color="text.primary"
+                    >
+                      {parseTime(x.timestamp)}
+                    </Typography>
+                    <Typography
+                      sx={{ display: 'block', width: "60%", textOverflow: 'ellipsis' }}
+                      component="span"
+                      variant="body2"
+                      color="text.primary"
+
+                    >
+                      {x.lastMessage}
+                    </Typography>
+
+                  </React.Fragment>
+                }
+
+              />
+              <Badge badgeContent={x.unreadCount} sx={{ color: '#f84f31', marginRight: 5, marginTop: 5 }}>
+                <NotificationAddIcon fontSize='large' />
+              </Badge>
+            </ListItem>
+          </Link>
+          <Divider variant="inset" component="li" />
+        </Fragment>)
+    )
+  }
+
 
   return (
     <>
@@ -122,19 +160,16 @@ function ChatSystem () {
           <List
             sx={{ width: '100%', minWidth: '', bgcolor: 'background.paper' }}
           >
-            <Typography variant='h4'>Chat detail</Typography>
-            {JSON.stringify(chatDetail)}
-            <Divider />
-            <Typography variant='h4'>friendId</Typography>
-            {JSON.stringify(friendId)}
-            <Divider />
-            <Typography variant='h4'>friend Details</Typography>
-            {JSON.stringify(friendDetail)}
+            {listChat()}
+            {/* <Typography variant='h4'>cache Details</Typography> //@dev debug
+            {JSON.stringify(cacheData)} */}
           </List>
         </Box>
 
         <Box sx={sxDetail}>
-          <Outlet />
+          <messageContext value={{ messageId, setMessageId, cacheData, setCacheData }}>
+            <Outlet />
+          </messageContext>
         </Box>
       </Box>
     </>

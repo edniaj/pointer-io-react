@@ -92,12 +92,11 @@ function Navbar() {
             </Link>
           </Badge>
 
-          <Badge className={styles.badge}>
+          <Badge className={styles.badge} badgeContent={2}>
             <Link to="/" className={styles.icon}>
               <div>
                 <MessageIcon fontSize='medium' />
               </div>
-
             </Link>
           </Badge>
 
