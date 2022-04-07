@@ -27,7 +27,7 @@ import { tagOptionContext } from '../../App'
 import { createContext } from 'react'
 import axios from 'axios'
 import Cookies from 'js-cookie'
-
+import Navbar from '../Navbar'
 
 function JobCreate () {
   const [formData, setFormData] = useState({
@@ -48,9 +48,9 @@ function JobCreate () {
   }
 
   const handlePOST = async () => {
-    let timestamp = JSON.stringify((new Date()).getTime()) // Unix timestamp
+    let timestamp = JSON.stringify(new Date().getTime()) // Unix timestamp
 
-    await axios.post('http://localhost:3005/job-offer/add',{
+    await axios.post('http://localhost:3005/job-offer/add', {
       creator: Cookies.get('_id'),
       ...formData,
       jobTags: selectJob,
@@ -70,14 +70,11 @@ function JobCreate () {
     framework,
     fieldOfStudy
   } = useContext(tagOptionContext)
-
   ////////
 
   return (
     <>
-      {/* remember to config the api */}
-
-      {/* remember to config the api */}
+      
 
       <Typography variant='h3'>Create posting</Typography>
 

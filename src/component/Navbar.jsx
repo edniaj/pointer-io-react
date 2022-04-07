@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   navbar: {
     display: 'flex',
     flexDirection: 'row',
-    position:'sticky '
+    position:'sticky ',
   },
   navbar__left: { // Maybe delete navbar__left and navbar__right. Dont think its necessary
     flex: 1,
