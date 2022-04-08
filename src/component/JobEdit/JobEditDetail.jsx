@@ -608,7 +608,7 @@ function JobEditDetail() {
       >
         <ArrowBackIcon />
       </Fab>
-      <Container>
+      <Container maxWidth="sm">
 
         <Stack direction='column' spacing={10}>
           <div

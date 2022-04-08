@@ -9,7 +9,6 @@ import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.js'
 
 import './Map.css'
 import { FormControl, OutlinedInput } from '@mui/material'
-import { Co2Sharp } from '@mui/icons-material'
 import { FormLabel } from '@mui/material'
 
 // import marker icons
@@ -63,7 +62,6 @@ class MapComp extends Component {
 
   render() {
     const center = this.state.emptyList ? [37.7833, -122.4167] : [this.state.latitude, this.state.longitude]
-
     return (
       <>
         <FormControl

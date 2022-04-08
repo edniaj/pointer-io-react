@@ -25,11 +25,13 @@ import Popper from '@mui/material/Popper';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { Alert } from '@mui/material';
+
 const sxContainer = {
   display: 'flex',
   flexDirection: 'row',
-  height: 'auto',
-  marginTop: '10vh'
+  height: '80vh',
+  marginTop: '10vh',
+  width: '100vw'
 }
 
 const sxListItem = {
@@ -210,13 +212,13 @@ function JobEdit() {
     <>
       <Box sx={sxContainer}>
         <Box sx={sxMenu}>
-          <List sx={{ width: '100%', minWidth: '', bgcolor: 'background.paper' }}>
+          <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {listJobOffer()}
           </List>
         </Box>
 
-        <Box sx={sxDetail}>
-          <jobContext.Provider value={{ showOutlet,setShowOutlet}}>
+        <Box sx={sxDetail} >
+          <jobContext.Provider value={{ showOutlet, setShowOutlet }}>
             <Outlet />
           </jobContext.Provider>
         </Box>

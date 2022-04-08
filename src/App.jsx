@@ -2,8 +2,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './component/Home'
 import About from './component/About'
 import Error from './component/Error'
-import Job from './component/Job'
-import JobDetails from './component/JobDetails'
 import Judge from './component/Judge'
 import Login from './component/Login'
 import Register from './component/Register/Register'
@@ -15,6 +13,8 @@ import JobEditDetail from './component/JobEdit/JobEditDetail'
 import JobCreate from './component/JobCreate/JobCreate'
 import ChatSystem from './component/ChatSystem/ChatSystem'
 import Chat from './component/ChatSystem/Chat'
+import JobView from './component/JobView/JobView'
+import JobViewDetail from './component/JobView/JobViewDetail'
 
 export const loginContext = createContext(null)
 export const tagOptionContext = createContext(null)
@@ -170,8 +170,8 @@ function App() {
               <Route path='about' element={<About />} />
               <Route path='judge' element={<Judge />} />
 
-              <Route path='job' element={<Job />}>  {/* This is for regular users that are finding job */}
-                <Route path=':id' element={<JobDetails />} />
+              <Route path='job' element={<JobView />}>  {/* This is for regular users that are finding job */}
+                <Route path=':id' element={<JobViewDetail />} />
               </Route>
               <Route path='job/edit' element={<JobEdit />}>  {/* This is for job creators to edit  */}
                 <Route path=':id' element={<JobEditDetail />} /> 
