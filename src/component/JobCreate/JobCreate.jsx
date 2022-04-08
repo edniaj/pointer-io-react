@@ -29,7 +29,7 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import Navbar from '../Navbar'
 
-function JobCreate () {
+function JobCreate() {
   const [formData, setFormData] = useState({
     jobDescription: ''
   })
@@ -38,6 +38,8 @@ function JobCreate () {
   const [selectFramework, setSelectFramework] = useState([])
   const [selectFieldOfstudy, setSelectFieldOfStudy] = useState([])
   const [location, setLocation] = useState([1.2931213, 103.8498238]) //Location set at cityhall
+
+  let navigate = useNavigate()
 
   // handleInput will handle regular form data
   const handleInput = e => {
@@ -60,6 +62,10 @@ function JobCreate () {
       location,
       timestamp
     })
+      .then(x=> {
+        console.log(x.data)
+        navigate('../job/edit')
+      })
   }
 
   ////////
@@ -74,7 +80,7 @@ function JobCreate () {
 
   return (
     <>
-      
+
 
       <Typography variant='h3'>Create posting</Typography>
 
@@ -320,3 +326,17 @@ function JobCreate () {
 }
 
 export default JobCreate
+
+// db.jobOffer.updateOne(
+//   {
+//     "_id": ObjectId("624d1d2555469b89e419d593")
+//   }
+//   ,
+//   {
+//     "$unset": { "clone": "" }
+//   }
+// )
+
+// db.jobOffer.findOne({
+//   "_id": ObjectId("624d1d2555469b89e419d593")
+// },{})

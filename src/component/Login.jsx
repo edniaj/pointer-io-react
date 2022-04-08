@@ -47,7 +47,7 @@ function Login () {
         Cookies.set('password', password, { expires: 7 })
         Cookies.set('_id', _id, { expires: 7 })
         console.log('success')
-        navigate('../')
+        
       })
       .catch(err => {
         console.log(err.response.data)

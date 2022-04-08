@@ -10,6 +10,7 @@ import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.js'
 import './Map.css'
 import { FormControl, OutlinedInput } from '@mui/material'
 import { Co2Sharp } from '@mui/icons-material'
+import { FormLabel } from '@mui/material'
 
 // import marker icons
 delete L.Icon.Default.prototype._getIconUrl
@@ -73,7 +74,7 @@ class MapComp extends Component {
             minWidth: 700
           }}
         >
-          <label>Location</label>
+          <FormLabel>Location</FormLabel>
           <OutlinedInput
             id='outlined-read-only-input'
             label='Location'

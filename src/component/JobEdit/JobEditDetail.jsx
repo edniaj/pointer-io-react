@@ -29,9 +29,13 @@ import { tagOptionContext } from '../../App'
 import MapComp from '../JobCreate/MapGenerate'
 import { Container } from '@mui/material'
 import { useForm, Controller } from "react-hook-form";
-
-
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import useScrollTrigger from '@mui/material/useScrollTrigger';
+import PropTypes from 'prop-types';
+import Slide from '@mui/material/Slide';
+import CssBaseline from '@mui/material/CssBaseline';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
 const countries = [
   { code: 'AD', label: 'Andorra', phone: '376' },
   {
@@ -474,6 +478,55 @@ const sxAutocomplete = {
   height: "5em"
 }
 
+
+// function HideOnScroll(props) {
+//   const { children, window } = props;
+//   // Note that you normally won't need to set the window ref as useScrollTrigger
+//   // will default to window.
+//   // This is only being set here because the demo is in an iframe.
+//   const trigger = useScrollTrigger({
+//     target: window ? window() : undefined,
+//   });
+
+//   return (
+//     <Slide appear={false} direction="down" in={!trigger}>
+//       {children}
+//     </Slide>
+//   );
+// }
+
+// HideOnScroll.propTypes = {
+//   children: PropTypes.element.isRequired,
+//   /**
+//    * Injected by the documentation to work in an iframe.
+//    * You won't need it on your project.
+//    */
+//   window: PropTypes.func,
+// };
+//   function HideAppBar(props) {
+//     return (
+//       <React.Fragment>
+//         <CssBaseline />
+//         <HideOnScroll {...props}>
+//           <AppBar >
+//             <Toolbar>
+//               <Typography variant="h6" component="div">
+//                 Scroll to Hide App Bar
+//               </Typography>
+//             </Toolbar>
+//           </AppBar>
+//         </HideOnScroll>
+//         <Toolbar />
+//         <Container>
+//           <Box sx={{ my: 2 }}>
+
+//           </Box>
+//         </Container>
+//       </React.Fragment>
+//     );
+//   }
+
+
 function JobEditDetail() {
   const [formData, setFormData] = useState([])
   const [selectJob, setSelectJob] = useState([])
@@ -483,12 +536,14 @@ function JobEditDetail() {
   const [location, setLocation] = useState([1.2931213, 103.8498238]) //Location set at cityhall
   const { pathname } = useLocation()
   const { jobOption, programmingLanguage, framework, fieldOfStudy } = useContext(tagOptionContext)
+  const { showOutlet, setShowOutlet } = useContext(jobContext)
 
+  let navigate = useNavigate()
 
   let _id = pathname.replace('/job/edit/', '')
-  const handlePOST = async () => {
+  const handlePut = async () => {
     let timestamp = JSON.stringify(new Date().getTime()) // Unix timestamp
-    await axios.put(`http://localhost:3005/job-offer/edit/${_id}`, {
+    axios.put(`http://localhost:3005/job-offer/edit/${_id}`, {
       creator: Cookies.get('_id'),
       ...formData,
       jobTags: selectJob,
@@ -498,6 +553,10 @@ function JobEditDetail() {
       location,
       timestamp
     })
+      .then(x => {
+        console.log(x.data)
+        navigate('../')
+      })
   }
   const handleInput = e => {
     setFormData({
@@ -505,6 +564,7 @@ function JobEditDetail() {
       [e.target.name]: e.target.value
     })
   }
+
   const debug = () => {
     return (<>
       {selectJob}
@@ -535,8 +595,19 @@ function JobEditDetail() {
 
   return (
     <>
-
-      <Typography variant='h3'>Edit posting</Typography>
+      <Fab
+        sx={{
+          margin: '1em', backgroundColor: 'royalblue', color: 'white', position: 'sticky', top: 0,
+          display: {
+            xs: showOutlet ? 'block' : 'none',
+            lg: 'none'
+          }
+        }}
+        aria-label='add'
+        onClick={() => setShowOutlet(!showOutlet)}
+      >
+        <ArrowBackIcon />
+      </Fab>
       <Container>
 
         <Stack direction='column' spacing={10}>
@@ -545,21 +616,21 @@ function JobEditDetail() {
               bgcolor: 'background.paper',
               boxShadow: 1,
               borderRadius: 2,
-              minWidth: 800
+              minWidth: 450
             }}
           >
             <div>
               <FormControl
                 sx={sxField}
               >
-
+                <FormLabel>Job Title</FormLabel>
                 <OutlinedInput
 
                   value={formData['jobTitle'] || ""}
                   name='jobTitle'
                   onChange={handleInput}
                 ></OutlinedInput>
-                <InputLabel>Job Title</InputLabel>
+
               </FormControl>
             </div>
             <div>
@@ -569,10 +640,10 @@ function JobEditDetail() {
                   boxShadow: 1,
                   borderRadius: 2,
                   minWidth: 700,
-                  marginTop: "2em"
+                  marginTop: "2em",
                 }}
               >
-
+                <FormLabel>Job description</FormLabel>
                 <OutlinedInput
 
                   value={formData['jobDescription'] || ""}
@@ -581,31 +652,32 @@ function JobEditDetail() {
                   multiline={true}
                   rows={10}
                 ></OutlinedInput>
-                <InputLabel>Job description</InputLabel>
+
               </FormControl>
             </div>
 
             <FormControl
               sx={sxField}
             >
+              <FormLabel>Organization name</FormLabel>
               <OutlinedInput
                 value={formData['organizationName'] || ""}
                 name='organizationName'
                 onChange={handleInput}
               ></OutlinedInput>
-              <InputLabel>Organization name</InputLabel>
+
             </FormControl>
 
             <FormControl
               sx={sxField}
             >
-
+              <FormLabel>Organization image url</FormLabel>
               <OutlinedInput
                 value={formData['organizationImageurl'] || ""}
                 name='organizationImageurl'
                 onChange={handleInput}
               ></OutlinedInput>
-              <InputLabel>Organization image url</InputLabel>
+
             </FormControl>
 
             <Autocomplete
@@ -691,50 +763,53 @@ function JobEditDetail() {
             <FormControl
               sx={sxField}
             >
+              <FormLabel>Postal code</FormLabel>
               <OutlinedInput
-                value={formData['postalCode'] || "" }
+                value={formData['postalCode'] || ""}
                 name='postalCode'
                 onChange={handleInput}
               ></OutlinedInput>
-              <InputLabel>Postal code</InputLabel>
+
             </FormControl>
 
             <div>
               <FormControl
                 sx={sxField}
               >
-
+                <FormLabel>Street address</FormLabel>
                 <OutlinedInput
                   value={formData['streetAddress'] || ""}
                   name='streetAddress'
                   onChange={handleInput}
                 ></OutlinedInput>
-                <InputLabel>Street address</InputLabel>
+
               </FormControl>
 
               <FormControl sx={sxField}>
+                <FormLabel>Block no. / Unit no.</FormLabel>
                 <OutlinedInput
                   value={formData['blockNumber'] || ""}
                   name='blockNumber'
                   placeholder='apt, Suite, Unit, Building, Floor, etc (optional)'
                   onChange={handleInput}
                 ></OutlinedInput>
-                <InputLabel>Block number / Unit number</InputLabel>
+
               </FormControl>
               <div>
                 <FormControl sx={sxField}>
-                  
+                  <FormLabel>Minimum pay</FormLabel>
                   <OutlinedInput
-                    value={formData['minPay'] || "" }
+                    value={formData['minPay'] || ""}
                     name='minPay'
                     type='number'
                     placeholder='Minimum pay'
                     onChange={handleInput}
                   ></OutlinedInput>
-                  <InputLabel>Minimum pay</InputLabel>
+
                 </FormControl>
 
                 <FormControl sx={sxField}>
+                  <FormLabel>Maximum pay</FormLabel>
                   <OutlinedInput
                     value={formData['maxPay'] || ""}
                     name='maxPay'
@@ -742,14 +817,14 @@ function JobEditDetail() {
                     placeholder='Maximum pay'
                     onChange={handleInput}
                   ></OutlinedInput>
-                  <InputLabel>Maximum pay</InputLabel>
+
                 </FormControl>
               </div>
               <div>
                 <Button
                   variant='contained'
                   endIcon={<SendIcon />}
-                  onClick={handlePOST}
+                  onClick={handlePut}
                 >
                   Submit
                 </Button>

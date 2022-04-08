@@ -1,7 +1,7 @@
 import { Paper } from '@mui/material';
 import { Container } from '@mui/material';
 import React, { Fragment } from 'react'
-import { Link, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { useEffect } from 'react';
@@ -21,48 +21,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useContext } from 'react';
 import { createContext } from 'react';
-
-
+import Popper from '@mui/material/Popper';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import { Alert } from '@mui/material';
 const sxContainer = {
   display: 'flex',
   flexDirection: 'row',
   height: 'auto',
   marginTop: '10vh'
 }
-const sxMenu = {
-  border: 1,
-  display: {
-    lg: 'block'
-  }
-  ,
-  flex: {
-    xs: 1,
-    lg: 4
-  },
-  overflow: 'auto',
-  '&::-webkit-scrollbar': {
-    width: '0.6em',
-  },
-  '&::-webkit-scrollbar-track': {
-    boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-    webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
-  },
-  '&::-webkit-scrollbar-thumb': {
-    backgroundColor: 'rgba(0,0,0,.1)',
-    outline: '1px solid slategrey'
-  }
-}
-const sxDetail = {
-  border: 1,
-  display: {
-    xs: 'none',
-    lg: 'block'
-  }
-  ,
-  flex: {
-    lg: 6
-  }
-}
+
 const sxListItem = {
   height: '136px',
   // cursor: 'pointer',
@@ -77,13 +46,61 @@ const sxIcon = {
   },
   marginRight: '1em'
 }
-
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  pt: 2,
+  px: 4,
+  pb: 3,
+};
 export const jobContext = createContext(null)
 
 function JobEdit() {
   let _id = Cookies.get('_id')
+
   const [jobOffer, setJobOffer] = useState([])
   const [displayIndex, setDisplayIndex] = useState(0)
+  const [showOutlet, setShowOutlet] = useState(false)
+  const sxMenu = {
+    border: 1,
+    display: {
+      xs: !showOutlet ? 'block' : 'none',
+      lg: 'block'
+    }
+    ,
+    flex: {
+      xs: 1,
+      lg: 4
+    },
+    overflow: 'auto',
+    '&::-webkit-scrollbar': {
+      width: '0.6em',
+    },
+    '&::-webkit-scrollbar-track': {
+      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+      webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'rgba(0,0,0,.1)',
+      outline: '1px solid slategrey'
+    }
+  }
+  const sxDetail = {
+    border: 1,
+    display: {
+      xs: showOutlet ? 'block' : 'none',
+      lg: 'block'
+    }
+    ,
+    flex: {
+      lg: 6
+    }
+  }
+  let navigate = useNavigate()
 
   const parseTime = (date) => {
     return (
@@ -95,14 +112,17 @@ function JobEdit() {
     )
   }
 
-  const handleDelete = () => {
+  const handleDelete = (x) => {
+    axios.delete(`http://localhost:3005/job-offer/delete/${x['_id']}`)
+      .then(() => {
+        setJobOffer([])
+        navigate("./")
+      })
   }
   const handleEdit = (x) => {
-    console.log(x)
+    setShowOutlet(!showOutlet)
   }
-  const handleDisplayDetail = () => {
 
-  }
   useEffect(() => {
     let isCancelled = false
     axios.get(`http://localhost:3005/job-offer/view/${_id}`)
@@ -114,7 +134,7 @@ function JobEdit() {
     return () => {
       isCancelled = true
     }
-  }, [])
+  }, [jobOffer])
 
 
   const listJobOffer = () => {
@@ -127,20 +147,17 @@ function JobEdit() {
             sx={sxListItem}
             secondaryAction={
               <>
-                <Link to={`./${x._id}`} style={{textDecoration:'none',color:'black'}}>
+                <Link to={`./${x._id}`} style={{ textDecoration: 'none', color: 'black' }}>
                   <EditIcon sx={sxIcon}
                     onClick={() => handleEdit(index)} />
                 </Link>
-                <DeleteIcon sx={sxIcon}
-                  onClick={handleDelete} />
+                <DeleteIcon sx={sxIcon} onClick={() => handleDelete(x)}
+                />
+
               </>
             }
             disablePadding
-            onClick={() => console.log('test')}
           >
-
-
-
             <ListItemAvatar>
               <Avatar alt="image not available" src={x.organizationImageurl}
                 sx={{ width: "57px", height: "57px", marginRight: "10px" }}
@@ -199,7 +216,7 @@ function JobEdit() {
         </Box>
 
         <Box sx={sxDetail}>
-          <jobContext.Provider value={{ jobOffer, setJobOffer, displayIndex }}>
+          <jobContext.Provider value={{ showOutlet,setShowOutlet}}>
             <Outlet />
           </jobContext.Provider>
         </Box>
