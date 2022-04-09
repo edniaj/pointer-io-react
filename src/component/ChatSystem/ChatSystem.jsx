@@ -1,21 +1,24 @@
 import { Box, Container, Divider, List, Typography } from '@mui/material'
-import React, { createContext, Fragment, useEffect, useLayoutEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import axios from 'axios'
-import { AirTwoTone } from '@mui/icons-material'
 import { ListItem } from '@mui/material'
 import { ListItemAvatar } from '@mui/material';
 import { ListItemText } from '@mui/material';
 import { Avatar } from '@mui/material'
 import { Badge } from '@mui/material'
 import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
+import SendIcon from '@mui/icons-material/Send';
+import { createContext } from 'react'
 
 const sxContainer = {
   display: 'flex',
   flexDirection: 'row',
   height: '80vh',
-  marginTop: '10vh'
+  marginTop: '10vh',
+  width: '100%',
+
 }
 const sxMenu = {
   border: 1,
@@ -42,7 +45,7 @@ const sxMenu = {
 const sxDetail = {
   border: 1,
   display: {
-    // xs: 'none',
+    xs: 'none',
     lg: 'block'
   },
   flex: {
@@ -72,14 +75,12 @@ export const messageContext = createContext(null)
 
 
 function ChatSystem() {
-  let _id = Cookies.get('_id')
-  const [messageId, setMessageId] = useState([])
-  const [cacheData, setCacheData] = useState([])
-
+  let _id = Cookies.get('_id') // User ID
+  const [cacheData, setCacheData] = useState([]) // what if cache data dont have ?
+  
   useEffect(() => {
     let isCancelled = false
-    console.log(_id)
-    axios.get(`http://localhost:3005/messageCache/${_id}`)
+    axios.get(`http://localhost:3005/messageCache/${_id}`) // CacheId : {_id, chatId, from, to, lastMessage, unreadCount, timestamp, imageUrl, firstName, lastName}
       .then(x => {
         if (!isCancelled) {
           setCacheData(x.data)
@@ -89,7 +90,7 @@ function ChatSystem() {
     return () => {
       isCancelled = true
     }
-  }, [messageId])
+  }, [cacheData])
 
   const parseTime = (date) => {
     return (
@@ -104,7 +105,7 @@ function ChatSystem() {
     return (
       cacheData.map((x) =>
         <Fragment key={x._id}>
-          <Link to={`./${x.from}`} style={{ textDecoration: 'none', color: 'black' }}>
+          <Link to={`./${x.chatId}`} style={{ textDecoration: 'none', color: 'black' }}>
             <ListItem
               alignItems="flex-start"
               sx={sxListItem}
@@ -171,9 +172,9 @@ function ChatSystem() {
         </Box>
 
         <Box sx={sxDetail}>
-          <messageContext value={{ messageId, setMessageId, cacheData, setCacheData }}>
+          <messageContext.Provider value={{cacheData, setCacheData }}>
             <Outlet />
-          </messageContext>
+            </messageContext.Provider>
         </Box>
       </Box>
     </>
