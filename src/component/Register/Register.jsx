@@ -812,11 +812,15 @@ function Register() {
       <Box>
         <Tabs >
           <Tab label="Home" iconPosition="start" sx={{
+            backgroundColor:"white",
+            border: 1,
+            borderRadius:5,
             marginTop: "4vh",
             cursor: 'pointer',
             '&:hover': {
               backgroundColor: 'lightskyblue'
-            }
+            },
+            borderColor: 'primary.main'
           }} icon={<KeyboardBackspaceIcon />} onClick={() => navigate('../')} />
         </Tabs>
       </Box>

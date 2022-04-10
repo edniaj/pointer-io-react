@@ -1,11 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './component/Home'
-import About from './component/About'
 import Error from './component/Error'
-import Judge from './component/Judge'
 import Login from './component/ProtectedRoutes'
 import Register from './component/Register/Register'
-import Profile from './component/Profile'
 import { createContext, useState } from 'react'
 import Navbar from './component/Navbar'
 import JobEdit from './component/JobEdit/JobEdit'
@@ -168,10 +165,8 @@ function App() {
             <Routes>
               <Route element={<ProtectedRoutes />}>
                 <Route path='/' element={<Home />} />
-                <Route path='profile/:id' element={<Profile />} />
 
                 <Route path='logout' element={<Logout />} />
-                <Route path='judge' element={<Judge />} />
                 <Route path='job' element={<JobView />}>  {/* This is for regular users that are finding job */}
                   <Route path=':id' element={<JobViewDetail />} />
                 </Route>

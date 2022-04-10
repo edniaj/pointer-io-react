@@ -87,6 +87,7 @@ function JobEdit() {
   flexDirection: 'row',
   height: '100%',
   width: '100%',
+  marginTop: "10vh"
 }
   let navigate = useNavigate()
 

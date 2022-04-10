@@ -17,15 +17,24 @@ import { loginContext } from '../App';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 function Navbar() {
   const [value, setValue] = React.useState(0);
-  const {login} = useContext(loginContext)
+  const { login } = useContext(loginContext)
   let navigate = useNavigate()
+
   const sxLoggedIn = {
-    width: "100%",
-    display: login ? "block" : "none"
+    width: "100vw",
+    position: "fixed",
+    top: 0,
+    display: !login ? "none" : "block",
+    backgroundColor: "rgb(235,235,235,0.91)",
+    zIndex: 999,
   }
   const sxLoggedOut = {
-    width: "100%",
-    display: !login ? "block" : "none"
+    width: "100vw",
+    position: "fixed",
+    top: 0,
+    display: !login ? "block" : "none",
+    backgroundColor: "rgb(235,235,235,0.91)",
+    zIndex: 999,
   }
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -34,7 +43,8 @@ function Navbar() {
   return (
     <>
       <Box sx={sxLoggedIn}>
-        <Tabs value={value} onChange={handleChange} aria-label="nav tabs example">
+        <Tabs value={value} onChange={handleChange} aria-label="nav tabs example"
+        >
           <Tab label="Home" iconPosition="start" icon={<HomeOutlinedIcon />} onClick={() => navigate('./')} />
           <Tab label="Chat" iconPosition="start" icon={<MessageOutlinedIcon />} onClick={() => navigate('./chat')} />
           <Tab label="Job" iconPosition="start" icon={<WorkOutlineIcon />} onClick={() => navigate('./job')} />
@@ -43,6 +53,7 @@ function Navbar() {
           <Tab label="Log out" iconPosition="start" icon={<LogoutIcon />} onClick={() => navigate('./logout')} />
         </Tabs>
       </Box>
+
       <Box sx={sxLoggedOut}>
         <Tabs value={value} onChange={handleChange} aria-label="nav tabs example">
           <Tab label="Home" iconPosition="start" icon={<HomeOutlinedIcon />} onClick={() => navigate('./')} />

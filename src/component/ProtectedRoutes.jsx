@@ -65,7 +65,7 @@ function ProtectedRoutes() {
           email: Cookies.get('email'),
           password: Cookies.get('password')
         })
-        .then( async (res) => {
+        .then(async (res) => {
           console.log(res.data)
           if (!isCancelled) setLogin(true)
           await setLogin(true)
@@ -83,55 +83,73 @@ function ProtectedRoutes() {
   }, [Cookies.get('email')])
 
   return (
-    login ? 
-    <Container maxWidth=''  disableGutters  sx={{ display: 'flex', flexDirection: "column", width:"100%", minHeight:"100vh", height:"auto" }}  >
-    <Navbar/>
-    <Outlet/> 
-    </Container>
-    : 
-     <>
-      <Container>
+    login ?
+      <Container maxWidth='' disableGutters
+        sx={{
+          display: 'flex',
+          flexDirection: "column",
+          width: "100%",
+          minHeight: "100vh",
+          height: "auto",
+          backgroundColor: "#ebebeb",
+        }}  >
         <Navbar />
-        {JSON.stringify(login)}
-        <div style={{ border: "1px solid black", height: "100vh", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Stack direction='column' spacing={2}>
-            <FormControl>
-              <InputLabel>Login email</InputLabel>
-              <OutlinedInput
-                value={email}
-                name='email'
-                onChange={handleInput}
-              ></OutlinedInput>
-            </FormControl>
-
-            <FormControl>
-              <InputLabel> Password</InputLabel>
-              <OutlinedInput
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                name='password'
-                onChange={handleInput}
-                id='password'
-                endAdornment={
-                  <IconButton onClick={handleShowPassword} edge='end'>
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                }
-                label='Password'
-              ></OutlinedInput>
-            </FormControl>
-
-            <Button
-              variant='outlined'
-              endIcon={<LoginIcon />}
-              onClick={handlePOST}
-            >
-              Login
-            </Button>
-          </Stack>
-        </div>
+        <Outlet />
       </Container>
-    </> 
+      :
+      <>
+        <Container sx={{}}>
+          <Navbar />
+          {JSON.stringify(login)}
+          <div style={{
+            backgroundColor: "rgb(235,235,235,0.91)",
+            zIndex:5,
+            borderRadius:20,
+            border: "1px solid black",
+            height: "100vh",
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: "10vh"
+          }}>
+            <Stack direction='column' spacing={2}>
+              <FormControl>
+                <InputLabel>Login email</InputLabel>
+                <OutlinedInput
+                  value={email}
+                  name='email'
+                  onChange={handleInput}
+                ></OutlinedInput>
+              </FormControl>
+
+              <FormControl>
+                <InputLabel> Password</InputLabel>
+                <OutlinedInput
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  name='password'
+                  onChange={handleInput}
+                  id='password'
+                  endAdornment={
+                    <IconButton onClick={handleShowPassword} edge='end'>
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  }
+                  label='Password'
+                ></OutlinedInput>
+              </FormControl>
+
+              <Button
+                variant='outlined'
+                endIcon={<LoginIcon />}
+                onClick={handlePOST}
+              >
+                Login
+              </Button>
+            </Stack>
+          </div>
+        </Container>
+      </>
   )
 }
 

@@ -106,13 +106,15 @@ function JobCreate() {
     <>
 
 
-      <Typography variant='h3'>Create posting</Typography>
+
 
       <Container
         sx={{
           textAlign: {
             md: "center",
-            xs: "left"
+            xs: "left",
+            backgroundColor: "rgb(255,255,255)",
+            marginTop: "5vw "
           },
           // textAlign:"left"
         }}
@@ -120,6 +122,7 @@ function JobCreate() {
         <Stack direction='column' spacing={2}>
 
           <div>
+            <Typography variant='h3'>Create posting</Typography>
             <FormControl
               sx={sxField}
             >
@@ -313,7 +316,7 @@ function JobCreate() {
         </Stack>
 
         <Container sx={{ marginTop: 2, marginBottom: 10 }}>
-          
+
           <OutlinedInput
             sx={sxField}
             id='outlined-read-only-input'

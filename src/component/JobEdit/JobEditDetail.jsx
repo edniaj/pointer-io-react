@@ -561,7 +561,8 @@ function JobEditDetail() {
           display: {
             xs: showOutlet ? 'block' : 'none',
             lg: 'none'
-          }
+          },
+          marginTop:"5vh"
         }}
         aria-label='add'
         onClick={() => setShowOutlet(!showOutlet)}

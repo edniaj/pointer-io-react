@@ -18,6 +18,8 @@ const sxContainer = {
   flexDirection: 'row',
   height: '100%',
   width: '100%',
+  marginTop: '10vh',
+  backgroundColor: "white"
 }
 
 const sxListItem = {
@@ -158,7 +160,7 @@ function ChatSystem() {
               <Badge badgeContent={x.unreadCount}
                 sx={{
                   color: '#f84f31', marginRight: 5, marginTop: 5,
-                  display: x.unreadCount ?  "block" : 'none'
+                  display: x.unreadCount ?  'block' : 'none'
                 }}>
                 <NotificationAddIcon fontSize='large' />
               </Badge>
