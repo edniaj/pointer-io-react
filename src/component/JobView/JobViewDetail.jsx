@@ -98,8 +98,6 @@ function JobViewDetail() {
     }, [_id])
 
 
-
-    // console.log("res :",res)
     const handleApplyJob = () => {
         let writeData = {
             _userId,

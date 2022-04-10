@@ -87,7 +87,6 @@ function JobCreate() {
       timestamp
     })
       .then(x => {
-        console.log(x.data)
         navigate('../job/edit')
       })
   }

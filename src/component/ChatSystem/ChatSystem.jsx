@@ -98,7 +98,6 @@ function ChatSystem() {
   }, [cacheData])
 
   const handleShow = () => {
-    console.log('a')
     setShowOutlet(!showOutlet)
   }
 

@@ -575,7 +575,6 @@ function JobView() {
         }
     }
     const handleShow = () => {
-        console.log('a')
         setShowOutlet(!showOutlet)
       }
     let navigate = useNavigate()
@@ -584,11 +583,10 @@ function JobView() {
 
     useEffect(() => {
         let isCancelled = false
-        console.log('test')
         axios.get(`https://warm-citadel-62203.herokuapp.com/job-offer/all`)
             .then(x => {
                 if (!isCancelled) setJobOffer(x.data)
-                console.log(x.data)
+
             })
             .catch(err => console.log(err.response.data))
         return () => {
@@ -633,7 +631,6 @@ function JobView() {
         }
         axios.post("https://warm-citadel-62203.herokuapp.com/job-offer/criteria", writeData)
             .then(x => {
-                console.log(x)
                 setJobOffer(x.data)
             }).then(
                 // window.location.reload(true)

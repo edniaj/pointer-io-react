@@ -68,7 +68,6 @@ function Chat() {
     }
     await axios.post("https://warm-citadel-62203.herokuapp.com/message/add", writeData)
       .then(x => {
-        console.log(x.data)
         setMessaging("")
         setCacheData([])
       })

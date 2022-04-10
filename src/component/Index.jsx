@@ -11,7 +11,6 @@ function Index() {
 
     useEffect(() => {
         if (!login) {
-            console.log(login)
             navigate('./login')
         }
     }, [login, navigate])

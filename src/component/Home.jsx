@@ -5,7 +5,16 @@ import { useEffect } from 'react'
 import Navbar from './Navbar'
 import { Container } from '@mui/material';
 import { Typography } from '@mui/material'
-
+import { Tabs } from '@mui/material';
+import { Box } from '@mui/material';
+import { Tab } from '@mui/material';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import MessageOutlinedIcon from '@mui/icons-material/MessageOutlined';
+import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import LogoutIcon from '@mui/icons-material/Logout';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 function Home() {
 
@@ -15,15 +24,19 @@ function Home() {
     height: '100%',
     width: '100vw',
     marginTop: '10vh',
-    backgroundColor: "white",
+    backgroundColor: "ebebeb",
   }
 
   return (
     <>
       <Container sx={sxContainer}>
       
-        <img sx={{width:"100%"}} src="https://media3.giphy.com/media/RiykPw9tgdOylwFgUe/giphy.gif" alt='looking for job'/>
-      
+
+        <div>
+          <Typography>
+         <WorkOutlineIcon/>
+          </Typography>
+        </div>
         <div>
           <Typography variant="h4">
             Documentation
