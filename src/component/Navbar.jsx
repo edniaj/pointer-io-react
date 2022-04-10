@@ -47,6 +47,7 @@ function Navbar() {
           allowScrollButtonsMobile
           scrollButtons="auto" aria-label="nav tabs example"
         >
+          <Tab label="Home" iconPosition="start" icon={<HomeOutlinedIcon />} onClick={() => navigate('./')} />
           <Tab label="Chat" iconPosition="start" icon={<MessageOutlinedIcon />} onClick={() => navigate('./chat')} />
           <Tab label="Job" iconPosition="start" icon={<WorkOutlineIcon />} onClick={() => navigate('./job')} />
           <Tab label="Edit job" iconPosition="start" icon={<EngineeringOutlinedIcon />} onClick={() => navigate('./job/edit')} />

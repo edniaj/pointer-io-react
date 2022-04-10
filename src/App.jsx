@@ -1,10 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './component/Home'
-import Error from './component/Error'
-import Login from './component/ProtectedRoutes'
 import Register from './component/Register/Register'
 import { createContext, useState } from 'react'
-import Navbar from './component/Navbar'
 import JobEdit from './component/JobEdit/JobEdit'
 import JobEditDetail from './component/JobEdit/JobEditDetail'
 import JobCreate from './component/JobCreate/JobCreate'
@@ -182,7 +179,6 @@ function App() {
               <Route path='register' element={<Register />} />
 
 
-              <Route element={<Error />} />
 
             </Routes>
           </tagOptionContext.Provider>
