@@ -9,9 +9,9 @@ import { ListItemText } from '@mui/material';
 import { Avatar } from '@mui/material'
 import { Badge } from '@mui/material'
 import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
-import SendIcon from '@mui/icons-material/Send';
+
 import { createContext } from 'react'
-import Navbar from '../Navbar'
+
 
 const sxContainer = {
   display: 'flex',
