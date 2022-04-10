@@ -585,7 +585,7 @@ function JobView() {
     useEffect(() => {
         let isCancelled = false
         console.log('test')
-        axios.get(`http://localhost:3005/job-offer/all`)
+        axios.get(`https://warm-citadel-62203.herokuapp.com/job-offer/all`)
             .then(x => {
                 if (!isCancelled) setJobOffer(x.data)
                 console.log(x.data)
@@ -631,7 +631,7 @@ function JobView() {
             fieldOfStudy: selectFieldOfstudy,
             programmingLanguage: selectProgrammingLanguage
         }
-        axios.post("http://localhost:3005/job-offer/criteria", writeData)
+        axios.post("https://warm-citadel-62203.herokuapp.com/job-offer/criteria", writeData)
             .then(x => {
                 console.log(x)
                 setJobOffer(x.data)

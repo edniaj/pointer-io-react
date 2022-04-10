@@ -66,7 +66,7 @@ function Chat() {
       message: messaging,
       from
     }
-    await axios.post("http://localhost:3005/message/add", writeData)
+    await axios.post("https://warm-citadel-62203.herokuapp.com/message/add", writeData)
       .then(x => {
         console.log(x.data)
         setMessaging("")
@@ -90,7 +90,7 @@ function Chat() {
         chatId,
         from
       }
-      if (!isCancelled) axios.put(`http://localhost:3005/messageCache/clear/`, putData)
+      if (!isCancelled) axios.put(`https://warm-citadel-62203.herokuapp.com/messageCache/clear/`, putData)
     }, 1000);
     return () => {
       isCancelled = true
@@ -100,7 +100,7 @@ function Chat() {
   useEffect(() => {
     let isCancelled = false
     setInterval(() => {
-      axios.post(("http://localhost:3005/message/criteria"), { chatId })
+      axios.post(("https://warm-citadel-62203.herokuapp.com/message/criteria"), { chatId })
         .then(x => {
           if (!isCancelled) setMessageId(x.data)
         })

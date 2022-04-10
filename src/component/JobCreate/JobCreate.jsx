@@ -76,7 +76,7 @@ function JobCreate() {
     let timestamp = JSON.stringify(new Date().getTime()) // Unix timestamp
     formData['minPay'] = parseInt(formData['minPay'])
     formData['maxPay'] = parseInt(formData['maxPay'])
-    await axios.post('http://localhost:3005/job-offer/add', {
+    await axios.post('https://warm-citadel-62203.herokuapp.com/job-offer/add', {
       creator: Cookies.get('_id'),
       ...formData,
       jobTags: selectJob,
