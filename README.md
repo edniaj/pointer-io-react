@@ -47,8 +47,7 @@ Acceptance Criteria
 ## Website Structure
 
 ## Database structure
-[Imgur](https://i.imgur.com/WTtf66H.png)
-![erd](https://user-images.githubusercontent.com/26456566/162623668-7285f2ed-c8f2-4251-8a19-f5d2951e8d19.png)
+![erd](https://user-images.githubusercontent.com/26456566/162623718-81b6e508-be51-4fb4-a2e0-f5f86f90fdb2.png)
 ## Technologies Used
 
 HTML5
@@ -70,6 +69,8 @@ Heroku
 ## Test Cases
 
 ## Deployment
+
+
 
 Base directory: Not set
 
