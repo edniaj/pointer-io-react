@@ -489,7 +489,7 @@ function Register() {
   const [educationCount, setEducationaCount] = useState(1)
   const [licenseCount, setLicenseCount] = useState(1)
   const [showPassword, setShowPassword] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('a')
+  const [errorMessage, setErrorMessage] = useState('')
 
   let navigate = useNavigate()
   // This is to populate education field inside the form
