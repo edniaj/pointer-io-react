@@ -66,7 +66,6 @@ GitHub
 Netlify
 Heroku
 
-## Test Cases
 
 ## Deployment
 

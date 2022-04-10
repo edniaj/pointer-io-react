@@ -43,7 +43,9 @@ function Navbar() {
   return (
     <>
       <Box sx={sxLoggedIn}>
-        <Tabs value={value} onChange={handleChange} aria-label="nav tabs example"
+        <Tabs value={value} onChange={handleChange} variant="scrollable"
+          allowScrollButtonsMobile
+          scrollButtons="auto" aria-label="nav tabs example"
         >
           <Tab label="Chat" iconPosition="start" icon={<MessageOutlinedIcon />} onClick={() => navigate('./chat')} />
           <Tab label="Job" iconPosition="start" icon={<WorkOutlineIcon />} onClick={() => navigate('./job')} />
