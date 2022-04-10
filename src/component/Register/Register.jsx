@@ -468,6 +468,14 @@ const sxField = {
   borderRadius: 2,
   width: "100%",
 }
+const sxContainer = {
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  width: '100vw',
+  marginTop: '10vh',
+  backgroundColor: "white",
+}
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -812,9 +820,9 @@ function Register() {
       <Box>
         <Tabs >
           <Tab label="Home" iconPosition="start" sx={{
-            backgroundColor:"white",
+            backgroundColor: "white",
             border: 1,
-            borderRadius:5,
+            borderRadius: 5,
             marginTop: "4vh",
             cursor: 'pointer',
             '&:hover': {
@@ -826,7 +834,7 @@ function Register() {
       </Box>
 
 
-      <Container sx={{ marginTop: 2 }}>
+      <Container sx={sxContainer}>
 
         <div>
           <FormControl
