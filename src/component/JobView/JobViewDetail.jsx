@@ -26,29 +26,33 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import Cookies from 'js-cookie'
 
 
 const sxField = {
     bgcolor: 'background.paper',
     boxShadow: 1,
     borderRadius: 2,
-    minWidth: 700,
+    width: "100%",
+}
+const sxAutocomplete = {
+    bgcolor: 'background.paper',
+    boxShadow: 1,
+    borderRadius: 2,
+    width: "100%",
+    height: "auto",
     marginTop: "2em"
 }
 
-const sxAutocomplete = {
+
+const sxMultiline = {
     bgcolor: 'background.paper',
-    color: 'black',
     boxShadow: 1,
     borderRadius: 2,
-    minWidth: 700,
+    width: "100%",
     marginTop: "2em",
-    height: "5em"
+    marginBottom: "2em"
 }
-
-
-
-
 
 function JobViewDetail() {
     const [formData, setFormData] = useState([])
@@ -56,14 +60,11 @@ function JobViewDetail() {
     const [selectProgrammingLanguage, setSelectProgrammingLanguage] = useState([])
     const [selectFramework, setSelectFramework] = useState([])
     const [selectFieldOfstudy, setSelectFieldOfStudy] = useState([])
+    const [jobCreator, setJobCreator] = useState('')
     const [location, setLocation] = useState([0, 0]) //Location set at cityhall
     const { pathname } = useLocation()
-    // const { jobOption, programmingLanguage, framework, fieldOfStudy } = useContext(tagOptionContext)
     const { showOutlet, setShowOutlet } = useContext(jobContext)
-    // DRAWER
-
-
-    //END OF DRAWER
+    let _userId = Cookies.get('_id')
     let navigate = useNavigate()
 
     let _id = pathname.replace('/job/', '')
@@ -88,6 +89,7 @@ function JobViewDetail() {
                 setSelectFramework(res.framework)
                 setSelectFieldOfStudy(res.fieldOfStudy)
                 setLocation(res.location)
+                setJobCreator(res.creator)
             }
         })
         return () => {
@@ -95,14 +97,25 @@ function JobViewDetail() {
         }
     }, [_id])
 
-    // console.log("res :",res)
 
+
+    // console.log("res :",res)
+    const handleApplyJob = () => {
+        let writeData = {
+            _userId,
+            jobCreator
+        }
+        axios.post('http://localhost:3005/chat/add', writeData)
+            .then(x => {
+                navigate(`../../chat/${x.data}`)
+            })
+            .catch(err => {
+                navigate(`../../chat/${err.response.data}`)
+            })
+    }
 
     return (
         <>
-
-
-
             <Fab
                 sx={{
                     margin: '1em', backgroundColor: 'royalblue', color: 'white', position: 'sticky', top: 0,
@@ -121,27 +134,24 @@ function JobViewDetail() {
                 <div>
                     <Box>
 
-                        <ListItemAvatar>
-                            <Avatar alt="image not available" src={formData.organizationImageurl}
-                                sx={{ width: "57px", height: "57px", marginRight: "10px" }}
-                            />
-                        </ListItemAvatar>
-                        <FormControl
-                            sx={sxField}
-                        >
-                            <OutlinedInput
-                                value={formData['organizationName'] || ""}
-                                name='organizationName'
-                            ></OutlinedInput>
+                        <Typography variant="h3">
 
-                        </FormControl>
+                            {formData['organizationName'] || ""}
+                        </Typography>
+
 
                     </Box>
                     <Box>
-                        <Typography>
+                        <Typography variant="h5">
                             {formData['jobTitle']}
                         </Typography>
                     </Box>
+                    <Box>
+                        <Typography variant="h5">
+                            ${formData['minPay']} - ${formData['maxPay']}
+                        </Typography>
+                    </Box>
+
                     <Box>
                         <Typography>
                             {parseTime(formData['timestamp'])}
@@ -152,109 +162,17 @@ function JobViewDetail() {
                         <Button
                             variant='contained'
                             endIcon={<LibraryBooksIcon />}
+                            onClick={handleApplyJob}
                         >
                             Apply
                         </Button>
                     </Box>
-                    <Box>
 
-                        <Autocomplete
-                            multiple
-                            id='multiple-limit-tags'
-                            value={selectJob}
-                            freeSolo
-                            defaultValue={[]}
-                            renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    label='Job tags'
-                                    placeholder='Job tags ( Select 1 or more )'
-                                />
-                            )}
-                            disabled
-                            sx={sxAutocomplete}
-                        />
 
-                        <Autocomplete
-                            multiple
-                            id='multiple-tags-framework'
-                            // options={framework}
-                            value={selectFramework}
-                            freeSolo
-                            onChange={(e, newValue) => {
-                                setSelectFramework(newValue)
-                            }}
-                            defaultValue={[]}
-                            renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    label='Frameworks'
-                                    placeholder='Frameworks ( Select 1 or more )'
-                                />
-                            )}
-                            disabled
-                            sx={sxAutocomplete}
-                        />
-
-                        <Autocomplete
-                            multiple
-                            id='multiple-tags-programminglanguage'
-                            // options={programmingLanguage}
-                            value={selectProgrammingLanguage}
-                            freeSolo
-                            onChange={(e, newValue) => {
-                                setSelectProgrammingLanguage(newValue)
-                            }}
-                            defaultValue={[]}
-                            renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    label='Programming language'
-                                    placeholder='Programming langauge ( 1 or more )'
-                                />
-                            )}
-                            disabled
-                            sx={sxAutocomplete}
-                        />
-
-                        <Autocomplete
-                            multiple
-                            id='multiple-tags-fieldofstudy'
-                            // options={fieldOfStudy}
-                            value={selectFieldOfstudy}
-                            freeSolo
-                            onChange={(e, newValue) => {
-                                setSelectFieldOfStudy(newValue)
-                            }}
-                            defaultValue={[]}
-                            renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    label='Field of study'
-                                    placeholder='Field of study ( 1 or more )'
-                                />
-                            )}
-                            disabled
-                            sx={sxAutocomplete}
-                        />
-
-                    </Box>
-                    <Box>
-                        <Typography>
-                            {formData['minPay']} - {formData['maxPay']}
-                        </Typography>
-                    </Box>
                     <Box>
 
                         <FormControl
-                            sx={{
-                                bgcolor: 'background.paper',
-                                boxShadow: 1,
-                                borderRadius: 2,
-                                width: "100%",
-                                marginTop: "2em",
-                                marginLeft: 0
-                            }}
+                            sx={sxMultiline}
                         >
 
                             <OutlinedInput
@@ -264,15 +182,95 @@ function JobViewDetail() {
                                 multiline={true}
                                 rows={30}
                             ></OutlinedInput>
-
                         </FormControl>
+                        <MapView location={location} />
                     </Box>
+
+                    <Autocomplete
+                        // multiple
+                        id='multiple-limit-tags'
+                        value={selectJob}
+                        freeSolo
+                        defaultValue={[]}
+                        renderInput={(params => (
+                            <TextField
+                                {...params}
+                                label='Job tags'
+                                placeholder='Job tags ( Select 1 or more )'
+                            />
+                        ))}
+                        disabled
+                        sx={sxAutocomplete}
+                    />
+
+                    <Autocomplete
+                        multiple
+                        id='multiple-tags-framework'
+                        // options={framework}
+                        value={selectFramework}
+                        freeSolo
+                        onChange={(e, newValue) => {
+                            setSelectFramework(newValue)
+                        }}
+                        defaultValue={[]}
+                        renderInput={params => (
+                            <TextField
+                                {...params}
+                                label='Frameworks'
+                                placeholder='Frameworks ( Select 1 or more )'
+                            />
+                        )}
+                        disabled
+                        sx={sxAutocomplete}
+                    />
+
+                    <Autocomplete
+                        multiple
+                        id='multiple-tags-programminglanguage'
+                        // options={programmingLanguage}
+                        value={selectProgrammingLanguage}
+                        freeSolo
+                        onChange={(e, newValue) => {
+                            setSelectProgrammingLanguage(newValue)
+                        }}
+                        defaultValue={[]}
+                        renderInput={params => (
+                            <TextField
+                                {...params}
+                                label='Programming language'
+                                placeholder='Programming langauge ( 1 or more )'
+                            />
+                        )}
+                        disabled
+                        sx={sxAutocomplete}
+                    />
+
+                    <Autocomplete
+                        multiple
+                        id='multiple-tags-fieldofstudy'
+                        // options={fieldOfStudy}
+                        value={selectFieldOfstudy}
+                        freeSolo
+                        onChange={(e, newValue) => {
+                            setSelectFieldOfStudy(newValue)
+                        }}
+                        defaultValue={[]}
+                        renderInput={params => (
+                            <TextField
+                                {...params}
+                                label='Field of study'
+                                placeholder='Field of study ( 1 or more )'
+                            />
+                        )}
+                        disabled
+                        sx={{ ...sxAutocomplete, marginBottom: "2em" }}
+                    />
+
 
 
                 </div>
 
             </Container>
-            <MapView location={location} />
 
         </>
     )
@@ -280,51 +278,3 @@ function JobViewDetail() {
 
 export default JobViewDetail
 
-
-
-// function HideOnScroll(props) {
-//   const { children, window } = props;
-//   // Note that you normally won't need to set the window ref as useScrollTrigger
-//   // will default to window.
-//   // This is only being set here because the demo is in an iframe.
-//   const trigger = useScrollTrigger({
-//     target: window ? window() : undefined,
-//   });
-
-//   return (
-//     <Slide appear={false} direction="down" in={!trigger}>
-//       {children}
-//     </Slide>
-//   );
-// }
-
-// HideOnScroll.propTypes = {
-//   children: PropTypes.element.isRequired,
-//   /**
-//    * Injected by the documentation to work in an iframe.
-//    * You won't need it on your project.
-//    */
-//   window: PropTypes.func,
-// };
-//   function HideAppBar(props) {
-//     return (
-//       <React.Fragment>
-//         <CssBaseline />
-//         <HideOnScroll {...props}>
-//           <AppBar >
-//             <Toolbar>
-//               <Typography variant="h6" component="div">
-//                 Scroll to Hide App Bar
-//               </Typography>
-//             </Toolbar>
-//           </AppBar>
-//         </HideOnScroll>
-//         <Toolbar />
-//         <Container>
-//           <Box sx={{ my: 2 }}>
-
-//           </Box>
-//         </Container>
-//       </React.Fragment>
-//     );
-//   }

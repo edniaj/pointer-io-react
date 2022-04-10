@@ -11,50 +11,18 @@ import { Badge } from '@mui/material'
 import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
 import SendIcon from '@mui/icons-material/Send';
 import { createContext } from 'react'
+import Navbar from '../Navbar'
 
 const sxContainer = {
   display: 'flex',
   flexDirection: 'row',
-  height: '80vh',
-  marginTop: '10vh',
+  height: '100%',
   width: '100%',
+}
 
-}
-const sxMenu = {
-  border: 1,
-  display: {
-    lg: 'block'
-  },
-  flex: {
-    xs: 1,
-    lg: 4
-  },
-  overflow: 'auto',
-  '&::-webkit-scrollbar': {
-    width: '0.6em'
-  },
-  '&::-webkit-scrollbar-track': {
-    boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-    webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
-  },
-  '&::-webkit-scrollbar-thumb': {
-    backgroundColor: 'rgba(0,0,0,.1)',
-    outline: '1px solid slategrey'
-  }
-}
-const sxDetail = {
-  border: 1,
-  display: {
-    xs: 'none',
-    lg: 'block'
-  },
-  flex: {
-    lg: 6
-  }
-}
 const sxListItem = {
-  height: '136px',
-  // cursor: 'pointer',
+  minHeight: "136px",
+  cursor: 'pointer',
   '&:hover': {
     backgroundColor: 'lightskyblue'
   }
@@ -77,7 +45,42 @@ export const messageContext = createContext(null)
 function ChatSystem() {
   let _id = Cookies.get('_id') // User ID
   const [cacheData, setCacheData] = useState([]) // what if cache data dont have ?
-  
+  const [showOutlet, setShowOutlet] = useState(false)
+  const sxMenu = {
+    border: 1,
+    display: {
+      xs: !showOutlet ? 'block' : 'none',
+      lg: 'block'
+    }
+    ,
+    flex: {
+      xs: 1,
+      lg: 4
+    },
+    overflow: 'auto',
+    '&::-webkit-scrollbar': {
+      width: '0.6em',
+    },
+    '&::-webkit-scrollbar-track': {
+      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+      webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'rgba(0,0,0,.1)',
+      outline: '1px solid slategrey'
+    }
+  }
+  const sxDetail = {
+    border: 1,
+    display: {
+      xs: showOutlet ? 'block' : 'none',
+      lg: 'block'
+    }
+    ,
+    flex: {
+      lg: 6
+    }
+  }
   useEffect(() => {
     let isCancelled = false
     axios.get(`http://localhost:3005/messageCache/${_id}`) // CacheId : {_id, chatId, from, to, lastMessage, unreadCount, timestamp, imageUrl, firstName, lastName}
@@ -91,6 +94,11 @@ function ChatSystem() {
       isCancelled = true
     }
   }, [cacheData])
+
+  const handleShow = () => {
+    console.log('a')
+    setShowOutlet(!showOutlet)
+  }
 
   const parseTime = (date) => {
     return (
@@ -110,7 +118,7 @@ function ChatSystem() {
               alignItems="flex-start"
               sx={sxListItem}
               disablePadding
-              onClick={() => console.log('test')}
+              onClick={handleShow}
             >
               <ListItemAvatar>
                 <Avatar alt="image not available" src={x.imageUrl}
@@ -147,7 +155,11 @@ function ChatSystem() {
                 }
 
               />
-              <Badge badgeContent={x.unreadCount} sx={{ color: '#f84f31', marginRight: 5, marginTop: 5 }}>
+              <Badge badgeContent={x.unreadCount}
+                sx={{
+                  color: '#f84f31', marginRight: 5, marginTop: 5,
+                  display: x.unreadCount ?  "block" : 'none'
+                }}>
                 <NotificationAddIcon fontSize='large' />
               </Badge>
             </ListItem>
@@ -160,6 +172,7 @@ function ChatSystem() {
 
   return (
     <>
+
       <Box sx={sxContainer}>
         <Box sx={sxMenu}>
           <List
@@ -172,9 +185,9 @@ function ChatSystem() {
         </Box>
 
         <Box sx={sxDetail}>
-          <messageContext.Provider value={{cacheData, setCacheData }}>
+          <messageContext.Provider value={{ cacheData, setCacheData, showOutlet, setShowOutlet }}>
             <Outlet />
-            </messageContext.Provider>
+          </messageContext.Provider>
         </Box>
       </Box>
     </>

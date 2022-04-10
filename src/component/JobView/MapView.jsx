@@ -9,7 +9,7 @@ function MapView(props) {
     const defaultCenter = props.location;
     const defaultZoom = 15;
     return (
-        <div className="App" sx={{width:"50px"}}>
+        <div className="App" sx={{width:"100%"}}>
             <Map center={defaultCenter} zoom={defaultZoom} marker={defaultCenter}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors" />
                 <Marker position={defaultCenter} >

@@ -10,12 +10,14 @@ import IconButton from '@mui/material/IconButton'
 import LoginIcon from '@mui/icons-material/Login'
 import { Button } from '@mui/material'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { useEffect } from 'react'
 import Stack from '@mui/material/Stack'
+import Navbar from './Navbar'
+import { useLayoutEffect } from 'react'
 
-function Login () {
+function ProtectedRoutes() {
   let { login, setLogin } = useContext(loginContext)
   let navigate = useNavigate()
   const [email, setEmail] = useState('')
@@ -39,7 +41,7 @@ function Login () {
       .post('http://localhost:3005/login', { email, password })
       .then(res => {
         if (res.data === [] || undefined) throw Error('User not found')
-        console.log('res.data = ',res.data)
+        console.log('res.data = ', res.data)
         setLogin(true)
         const { _id } = res.data
         console.log(_id)
@@ -47,28 +49,26 @@ function Login () {
         Cookies.set('password', password, { expires: 7 })
         Cookies.set('_id', _id, { expires: 7 })
         console.log('success')
-        
+
       })
       .catch(err => {
         console.log(err.response.data)
       })
   }
 
-  if (login) {
-    navigate('../')
-  } // redirect to homepage if loggedin
+
   useEffect(() => {
     let isCancelled = false
     const handleCookie = async () => {
       await axios
-        .post('http://localhost:3000/login', {
+        .post('http://localhost:3005/login', {
           email: Cookies.get('email'),
           password: Cookies.get('password')
         })
-        .then(res => {
+        .then( async (res) => {
           console.log(res.data)
           if (!isCancelled) setLogin(true)
-          setLogin(true)
+          await setLogin(true)
         })
         .catch(err => {
           console.log(err.response.data)
@@ -83,9 +83,17 @@ function Login () {
   }, [Cookies.get('email')])
 
   return (
-    <>
+    login ? 
+    <Container maxWidth=''  disableGutters  sx={{ display: 'flex', flexDirection: "column", width:"100%", minHeight:"100vh", height:"auto" }}  >
+    <Navbar/>
+    <Outlet/> 
+    </Container>
+    : 
+     <>
       <Container>
-        <div style={{border:"1px solid black",height:"100vh",display: 'flex', justifyContent: 'center', alignItems:'center' }}>
+        <Navbar />
+        {JSON.stringify(login)}
+        <div style={{ border: "1px solid black", height: "100vh", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Stack direction='column' spacing={2}>
             <FormControl>
               <InputLabel>Login email</InputLabel>
@@ -120,16 +128,12 @@ function Login () {
             >
               Login
             </Button>
-          </Stack> 
+          </Stack>
         </div>
       </Container>
-    </>
+    </> 
   )
 }
 
-export default Login
+export default ProtectedRoutes
 
-// Guides
-
-//Cookies.get('name')  get cookie by name
-// Cookies.remote('name') remove cookie by name

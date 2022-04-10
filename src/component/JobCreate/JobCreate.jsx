@@ -29,6 +29,30 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import Navbar from '../Navbar'
 
+
+const sxField = {
+  bgcolor: 'background.paper',
+  boxShadow: 1,
+  borderRadius: 2,
+  width: "100%",
+}
+
+const sxMultiline = {
+  bgcolor: 'background.paper',
+  boxShadow: 1,
+  borderRadius: 2,
+  width: "100%",
+}
+
+const sxAutocomplete = {
+  bgcolor: 'background.paper',
+  boxShadow: 1,
+  borderRadius: 2,
+  width: "100%",
+  height: "auto"
+}
+
+
 function JobCreate() {
   const [formData, setFormData] = useState({
     jobDescription: ''
@@ -38,7 +62,6 @@ function JobCreate() {
   const [selectFramework, setSelectFramework] = useState([])
   const [selectFieldOfstudy, setSelectFieldOfStudy] = useState([])
   const [location, setLocation] = useState([1.2931213, 103.8498238]) //Location set at cityhall
-
   let navigate = useNavigate()
 
   // handleInput will handle regular form data
@@ -51,7 +74,8 @@ function JobCreate() {
 
   const handlePOST = async () => {
     let timestamp = JSON.stringify(new Date().getTime()) // Unix timestamp
-
+    formData['minPay'] = parseInt(formData['minPay'])
+    formData['maxPay'] = parseInt(formData['maxPay'])
     await axios.post('http://localhost:3005/job-offer/add', {
       creator: Cookies.get('_id'),
       ...formData,
@@ -62,7 +86,7 @@ function JobCreate() {
       location,
       timestamp
     })
-      .then(x=> {
+      .then(x => {
         console.log(x.data)
         navigate('../job/edit')
       })
@@ -84,23 +108,20 @@ function JobCreate() {
 
       <Typography variant='h3'>Create posting</Typography>
 
-      <Stack direction='row' spacing={2}>
-        <div
-          sx={{
-            bgcolor: 'background.paper',
-            boxShadow: 1,
-            borderRadius: 2,
-            minWidth: 800
-          }}
-        >
+      <Container
+        sx={{
+          textAlign: {
+            md: "center",
+            xs: "left"
+          },
+          // textAlign:"left"
+        }}
+      >
+        <Stack direction='column' spacing={2}>
+
           <div>
             <FormControl
-              sx={{
-                bgcolor: 'background.paper',
-                boxShadow: 1,
-                borderRadius: 2,
-                minWidth: 700
-              }}
+              sx={sxField}
             >
               <InputLabel>Job Title</InputLabel>
               <OutlinedInput
@@ -112,12 +133,7 @@ function JobCreate() {
           </div>
           <div>
             <FormControl
-              sx={{
-                bgcolor: 'background.paper',
-                boxShadow: 1,
-                borderRadius: 2,
-                minWidth: 700
-              }}
+              sx={sxMultiline}
             >
               <InputLabel>Job description</InputLabel>
               <OutlinedInput
@@ -131,12 +147,7 @@ function JobCreate() {
           </div>
 
           <FormControl
-            sx={{
-              bgcolor: 'background.paper',
-              boxShadow: 1,
-              borderRadius: 2,
-              minWidth: 700
-            }}
+            sx={sxField}
           >
             <InputLabel>Organization name</InputLabel>
             <OutlinedInput
@@ -147,12 +158,7 @@ function JobCreate() {
           </FormControl>
 
           <FormControl
-            sx={{
-              bgcolor: 'background.paper',
-              boxShadow: 1,
-              borderRadius: 2,
-              minWidth: 700
-            }}
+            sx={sxField}
           >
             <InputLabel>Organization image url</InputLabel>
             <OutlinedInput
@@ -179,7 +185,7 @@ function JobCreate() {
                 placeholder='Job tags ( Select 1 or more )'
               />
             )}
-            sx={{ width: '500px' }}
+            sx={sxAutocomplete}
           />
 
           <Autocomplete
@@ -199,7 +205,7 @@ function JobCreate() {
                 placeholder='Frameworks ( Select 1 or more )'
               />
             )}
-            sx={{ width: '500px' }}
+            sx={sxAutocomplete}
           />
 
           <Autocomplete
@@ -219,7 +225,7 @@ function JobCreate() {
                 placeholder='Programming langauge ( 1 or more )'
               />
             )}
-            sx={{ width: '500px' }}
+            sx={sxAutocomplete}
           />
 
           <Autocomplete
@@ -239,16 +245,11 @@ function JobCreate() {
                 placeholder='Field of study ( 1 or more )'
               />
             )}
-            sx={{ width: '500px' }}
+            sx={sxAutocomplete}
           />
 
           <FormControl
-            sx={{
-              bgcolor: 'background.paper',
-              boxShadow: 1,
-              borderRadius: 2,
-              minWidth: 300
-            }}
+            sx={sxField}
           >
             <InputLabel>Postal code</InputLabel>
             <OutlinedInput
@@ -260,12 +261,7 @@ function JobCreate() {
 
           <div>
             <FormControl
-              sx={{
-                bgcolor: 'background.paper',
-                boxShadow: 1,
-                borderRadius: 2,
-                minWidth: 300
-              }}
+              sx={sxField}
             >
               <InputLabel>Street address</InputLabel>
               <OutlinedInput
@@ -274,7 +270,9 @@ function JobCreate() {
                 onChange={handleInput}
               ></OutlinedInput>
             </FormControl>
-            <FormControl>
+
+            <FormControl
+              sx={sxField}>
               <OutlinedInput
                 value={formData['blockNumber']}
                 name='blockNumber'
@@ -283,7 +281,10 @@ function JobCreate() {
               ></OutlinedInput>
             </FormControl>
             <div>
-              <FormControl>
+              <FormControl
+                sx={sxField}
+              >
+
                 <InputLabel>Minimum pay</InputLabel>
                 <OutlinedInput
                   value={formData['minPay']}
@@ -294,7 +295,8 @@ function JobCreate() {
                 ></OutlinedInput>
               </FormControl>
 
-              <FormControl>
+              <FormControl
+                sx={sxField}>
                 <InputLabel>Maximum pay</InputLabel>
                 <OutlinedInput
                   value={formData['maxPay']}
@@ -305,21 +307,32 @@ function JobCreate() {
                 ></OutlinedInput>
               </FormControl>
             </div>
-            <div>
-              <Button
-                variant='contained'
-                endIcon={<SendIcon />}
-                onClick={handlePOST}
-              >
-                Submit
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Stack>
 
-      <Container sx={{ marginTop: 2, marginBottom: 10 }}>
-        <MapComp value={{ location, setLocation }} />
+          </div>
+
+        </Stack>
+
+        <Container sx={{ marginTop: 2, marginBottom: 10 }}>
+          
+          <OutlinedInput
+            sx={sxField}
+            id='outlined-read-only-input'
+            label='Location'
+            name='location'
+            color='primary'
+            placeholder='Please mark location on the map by clicking on the magnifying glass'
+            disabled
+          ></OutlinedInput>
+          <MapComp value={{ location, setLocation }} />
+          <Button
+            variant='contained'
+            endIcon={<SendIcon />}
+            onClick={handlePOST}
+          >
+            Submit
+          </Button>
+
+        </Container>
       </Container>
     </>
   )

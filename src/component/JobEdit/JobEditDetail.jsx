@@ -21,7 +21,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Navigate } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { jobContext } from './JobEdit'
@@ -465,17 +465,22 @@ const sxField = {
   bgcolor: 'background.paper',
   boxShadow: 1,
   borderRadius: 2,
-  minWidth: 700,
-  marginTop: "2em"
+  width: "100%",
+}
+
+const sxMultiline = {
+  bgcolor: 'background.paper',
+  boxShadow: 1,
+  borderRadius: 2,
+  width: "100%",
 }
 
 const sxAutocomplete = {
   bgcolor: 'background.paper',
   boxShadow: 1,
   borderRadius: 2,
-  minWidth: 700,
-  marginTop: "2em",
-  height: "5em"
+  width: "100%",
+  height: "auto"
 }
 
 
@@ -489,13 +494,15 @@ function JobEditDetail() {
   const [location, setLocation] = useState([1.2931213, 103.8498238]) //Location set at cityhall
   const { pathname } = useLocation()
   const { jobOption, programmingLanguage, framework, fieldOfStudy } = useContext(tagOptionContext)
-  const { showOutlet, setShowOutlet } = useContext(jobContext)
+  const { showOutlet, setShowOutlet, setJobOffer } = useContext(jobContext)
 
   let navigate = useNavigate()
 
   let _id = pathname.replace('/job/edit/', '')
   const handlePut = async () => {
     let timestamp = JSON.stringify(new Date().getTime()) // Unix timestamp
+    formData['minPay'] = parseInt(formData['minPay'])
+    formData['maxPay'] = parseInt(formData['maxPay'])
     axios.put(`http://localhost:3005/job-offer/edit/${_id}`, {
       creator: Cookies.get('_id'),
       ...formData,
@@ -506,9 +513,10 @@ function JobEditDetail() {
       location,
       timestamp
     })
-      .then(x => {
-        navigate('../')
+      .then(async (x) => {
+        await setJobOffer([])
       })
+    navigate('../')
   }
   const handleInput = e => {
     setFormData({
@@ -560,53 +568,50 @@ function JobEditDetail() {
       >
         <ArrowBackIcon />
       </Fab>
-      <Container maxWidth="sm">
+      <Container
+        sx={{
+          textAlign: {
+            md: "center",
+            xs: "left"
+          },
+          // textAlign:"left"
+        }}
+      >
 
         <Stack direction='column' spacing={10}>
-          <div
-            sx={{
-              bgcolor: 'background.paper',
-              boxShadow: 1,
-              borderRadius: 2,
-              minWidth: 450
-            }}
-          >
-            <div>
-              <FormControl
-                sx={sxField}
-              >
-                <FormLabel>Job Title</FormLabel>
-                <OutlinedInput
 
-                  value={formData['jobTitle'] || ""}
-                  name='jobTitle'
-                  onChange={handleInput}
-                ></OutlinedInput>
+          <div>
+            <FormControl
+              sx={sxField}
+            >
+              <FormLabel>Job Title</FormLabel>
+              <OutlinedInput
 
-              </FormControl>
-            </div>
-            <div>
-              <FormControl
-                sx={{
-                  bgcolor: 'background.paper',
-                  boxShadow: 1,
-                  borderRadius: 2,
-                  minWidth: 700,
-                  marginTop: "2em",
-                }}
-              >
-                <FormLabel>Job description</FormLabel>
-                <OutlinedInput
+                value={formData['jobTitle'] || ""}
+                name='jobTitle'
+                onChange={handleInput}
+              ></OutlinedInput>
 
-                  value={formData['jobDescription'] || ""}
-                  name='jobDescription'
-                  onChange={handleInput}
-                  multiline={true}
-                  rows={10}
-                ></OutlinedInput>
+            </FormControl>
+          </div>
+          <Box >
+            <FormControl
+              sx={sxMultiline}
+            >
+              <FormLabel>Job description</FormLabel>
+              <OutlinedInput
 
-              </FormControl>
-            </div>
+                value={formData['jobDescription'] || ""}
+                name='jobDescription'
+                onChange={handleInput}
+                multiline={true}
+                rows={10}
+              ></OutlinedInput>
+
+            </FormControl>
+          </Box>
+          <div>
+
 
             <FormControl
               sx={sxField}
@@ -619,7 +624,8 @@ function JobEditDetail() {
               ></OutlinedInput>
 
             </FormControl>
-
+          </div>
+          <div>
             <FormControl
               sx={sxField}
             >
@@ -632,162 +638,177 @@ function JobEditDetail() {
 
             </FormControl>
 
-            <Autocomplete
-              multiple
-              id='multiple-limit-tags'
-              options={jobOption}
-              value={selectJob}
-              freeSolo
-              onChange={(e, newValue) => {
-                setSelectJob(newValue)
-              }}
-              defaultValue={[]}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label='Job tags'
-                  placeholder='Job tags ( Select 1 or more )'
-                />
-              )}
-              sx={sxAutocomplete}
-            />
-
-            <Autocomplete
-              multiple
-              id='multiple-tags-framework'
-              options={framework}
-              value={selectFramework}
-              freeSolo
-              onChange={(e, newValue) => {
-                setSelectFramework(newValue)
-              }}
-              defaultValue={[]}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label='Frameworks'
-                  placeholder='Frameworks ( Select 1 or more )'
-                />
-              )}
-              sx={sxAutocomplete}
-            />
-
-            <Autocomplete
-              multiple
-              id='multiple-tags-programminglanguage'
-              options={programmingLanguage}
-              value={selectProgrammingLanguage}
-              freeSolo
-              onChange={(e, newValue) => {
-                setSelectProgrammingLanguage(newValue)
-              }}
-              defaultValue={[]}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label='Programming language'
-                  placeholder='Programming langauge ( 1 or more )'
-                />
-              )}
-              sx={sxAutocomplete}
-            />
-
-            <Autocomplete
-              multiple
-              id='multiple-tags-fieldofstudy'
-              options={fieldOfStudy}
-              value={selectFieldOfstudy}
-              freeSolo
-              onChange={(e, newValue) => {
-                setSelectFieldOfStudy(newValue)
-              }}
-              defaultValue={[]}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label='Field of study'
-                  placeholder='Field of study ( 1 or more )'
-                />
-              )}
-              sx={sxAutocomplete}
-            />
-
-            <FormControl
-              sx={sxField}
-            >
-              <FormLabel>Postal code</FormLabel>
-              <OutlinedInput
-                value={formData['postalCode'] || ""}
-                name='postalCode'
-                onChange={handleInput}
-              ></OutlinedInput>
-
-            </FormControl>
-
-            <div>
-              <FormControl
-                sx={sxField}
-              >
-                <FormLabel>Street address</FormLabel>
-                <OutlinedInput
-                  value={formData['streetAddress'] || ""}
-                  name='streetAddress'
-                  onChange={handleInput}
-                ></OutlinedInput>
-
-              </FormControl>
-
-              <FormControl sx={sxField}>
-                <FormLabel>Block no. / Unit no.</FormLabel>
-                <OutlinedInput
-                  value={formData['blockNumber'] || ""}
-                  name='blockNumber'
-                  placeholder='apt, Suite, Unit, Building, Floor, etc (optional)'
-                  onChange={handleInput}
-                ></OutlinedInput>
-
-              </FormControl>
-              <div>
-                <FormControl sx={sxField}>
-                  <FormLabel>Minimum pay</FormLabel>
-                  <OutlinedInput
-                    value={formData['minPay'] || ""}
-                    name='minPay'
-                    type='number'
-                    placeholder='Minimum pay'
-                    onChange={handleInput}
-                  ></OutlinedInput>
-
-                </FormControl>
-
-                <FormControl sx={sxField}>
-                  <FormLabel>Maximum pay</FormLabel>
-                  <OutlinedInput
-                    value={formData['maxPay'] || ""}
-                    name='maxPay'
-                    type='number'
-                    placeholder='Maximum pay'
-                    onChange={handleInput}
-                  ></OutlinedInput>
-
-                </FormControl>
-              </div>
-              <div>
-                <Button
-                  variant='contained'
-                  endIcon={<SendIcon />}
-                  onClick={handlePut}
-                >
-                  Submit
-                </Button>
-              </div>
-            </div>
           </div>
+
+          <Autocomplete
+            multiple
+            id='multiple-limit-tags'
+            options={jobOption}
+            value={selectJob}
+            freeSolo
+            onChange={(e, newValue) => {
+              setSelectJob(newValue)
+            }}
+            defaultValue={[]}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label='Job tags'
+                placeholder='Job tags ( Select 1 or more )'
+              />
+            )}
+            sx={sxAutocomplete}
+          />
+
+          <Autocomplete
+            multiple
+            id='multiple-tags-framework'
+            options={framework}
+            value={selectFramework}
+            freeSolo
+            onChange={(e, newValue) => {
+              setSelectFramework(newValue)
+            }}
+            defaultValue={[]}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label='Frameworks'
+                placeholder='Frameworks ( Select 1 or more )'
+              />
+            )}
+            sx={sxAutocomplete}
+          />
+
+          <Autocomplete
+            multiple
+            id='multiple-tags-programminglanguage'
+            options={programmingLanguage}
+            value={selectProgrammingLanguage}
+            freeSolo
+            onChange={(e, newValue) => {
+              setSelectProgrammingLanguage(newValue)
+            }}
+            defaultValue={[]}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label='Programming language'
+                placeholder='Programming langauge ( 1 or more )'
+              />
+            )}
+            sx={sxAutocomplete}
+          />
+
+          <Autocomplete
+            multiple
+            id='multiple-tags-fieldofstudy'
+            options={fieldOfStudy}
+            value={selectFieldOfstudy}
+            freeSolo
+            onChange={(e, newValue) => {
+              setSelectFieldOfStudy(newValue)
+            }}
+            defaultValue={[]}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label='Field of study'
+                placeholder='Field of study ( 1 or more )'
+              />
+            )}
+            sx={sxAutocomplete}
+          />
+
+          <FormControl
+            sx={sxField}
+          >
+            <FormLabel>Postal code</FormLabel>
+            <OutlinedInput
+              value={formData['postalCode'] || ""}
+              name='postalCode'
+              onChange={handleInput}
+            ></OutlinedInput>
+
+          </FormControl>
+
+
+          <FormControl
+            sx={sxField}
+          >
+            <FormLabel>Street address</FormLabel>
+            <OutlinedInput
+              value={formData['streetAddress'] || ""}
+              name='streetAddress'
+              onChange={handleInput}
+            ></OutlinedInput>
+
+          </FormControl>
+
+          <FormControl sx={sxField}>
+            <FormLabel>Block no. / Unit no.</FormLabel>
+            <OutlinedInput
+              value={formData['blockNumber'] || ""}
+              name='blockNumber'
+              placeholder='apt, Suite, Unit, Building, Floor, etc (optional)'
+              onChange={handleInput}
+            ></OutlinedInput>
+
+          </FormControl>
+
+          <FormControl sx={sxField}>
+            <FormLabel>Minimum pay</FormLabel>
+            <OutlinedInput
+              value={formData['minPay'] || ""}
+              name='minPay'
+              type='number'
+              placeholder='Minimum pay'
+              onChange={handleInput}
+            ></OutlinedInput>
+
+          </FormControl>
+
+          <FormControl sx={sxField}>
+            <FormLabel>Maximum pay</FormLabel>
+            <OutlinedInput
+              value={formData['maxPay'] || ""}
+              name='maxPay'
+              type='number'
+              placeholder='Maximum pay'
+              onChange={handleInput}
+            ></OutlinedInput>
+
+          </FormControl>
+
+
+
+
         </Stack>
 
         <Container sx={{ marginTop: 2, marginBottom: 10 }}>
+          <FormControl
+            sx={sxField}
+          >
+            <FormLabel>Location</FormLabel>
+            <OutlinedInput
+              id='outlined-read-only-input'
+              label='Location'
+              name='location'
+              color='primary'
+              placeholder='Please mark location on the map by clicking on the magnifying glass'
+              disabled
+            ></OutlinedInput>
+          </FormControl>
           <MapComp value={{ location, setLocation }} />
+          <Button
+            variant='contained'
+            endIcon={<SendIcon />}
+            onClick={handlePut}
+          >
+            Submit
+          </Button>
         </Container>
+
       </Container>
     </>
   )

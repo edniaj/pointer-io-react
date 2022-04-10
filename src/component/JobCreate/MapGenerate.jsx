@@ -64,24 +64,7 @@ class MapComp extends Component {
     const center = this.state.emptyList ? [37.7833, -122.4167] : [this.state.latitude, this.state.longitude]
     return (
       <>
-        <FormControl
-          sx={{
-            bgcolor: 'background.paper',
-            boxShadow: 1,
-            borderRadius: 2,
-            minWidth: 700
-          }}
-        >
-          <FormLabel>Location</FormLabel>
-          <OutlinedInput
-            id='outlined-read-only-input'
-            label='Location'
-            name='location'
-            color='primary'
-            placeholder='Please mark location on the map by clicking on the magnifying glass'
-            disabled
-          ></OutlinedInput>
-        </FormControl>
+
         <Map
           style={{ height: '50vh' }}
           center={center}

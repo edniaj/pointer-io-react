@@ -24,26 +24,18 @@ import { createContext } from 'react';
 import Popper from '@mui/material/Popper';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import { Alert } from '@mui/material';
+
 import Drawer from '@mui/material/Drawer';
 import { FormControl } from '@mui/material'
 import { TextField } from '@mui/material'
-import IconButton from '@mui/material/IconButton'
+
 import OutlinedInput from '@mui/material/OutlinedInput'
-import InputLabel from '@mui/material/InputLabel'
 
 import Autocomplete from '@mui/material/Autocomplete'
 
 
 import FormLabel from '@mui/material/FormLabel'
 
-import { Fab } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-
-import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
 
 
@@ -62,6 +54,7 @@ import Toolbar from '@mui/material/Toolbar';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 
 import ListItemIcon from '@mui/material/ListItemIcon';
+import Navbar from '../Navbar';
 
 
 export const jobContext = createContext(null)
@@ -491,40 +484,23 @@ const countries = [
     { code: 'ZW', label: 'Zimbabwe', phone: '263' }
 ]
 
+
 const sxContainer = {
     display: 'flex',
     flexDirection: 'row',
-    height: 'auto',
-    minHeight: '100vh',
-    marginTop: '10vh',
-    // width:'100%'
+    height: '100%',
+    width: '100%',
 }
 
 const sxListItem = {
-    height: '136px',
+    minHeight: "136px",
     cursor: 'pointer',
     '&:hover': {
         backgroundColor: 'lightskyblue'
     }
 }
-const sxIcon = {
-    '&:hover': {
-        cursor: "pointer",
-        fontSize: '2em',
-    },
-    marginRight: '1em'
-}
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    pt: 2,
-    px: 4,
-    pb: 3,
-};
+
+
 const sxAutocomplete = {
     bgcolor: 'background.paper',
     boxShadow: 1,
@@ -547,7 +523,6 @@ function JobView() {
     const [jobOffer, setJobOffer] = useState([])
 
     const [showOutlet, setShowOutlet] = useState(false)
-    const [criteria, setCriteria] = useState({})
     const [formData, setFormData] = useState([])
     const [selectJob, setSelectJob] = useState([])
     const [selectProgrammingLanguage, setSelectProgrammingLanguage] = useState([])
@@ -562,6 +537,7 @@ function JobView() {
             [e.target.name]: e.target.value
         })
     }
+
     const sxMenu = {
         border: 1,
         display: {
@@ -597,9 +573,27 @@ function JobView() {
             lg: 6
         }
     }
+    const handleShow = () => {
+        console.log('a')
+        setShowOutlet(!showOutlet)
+      }
     let navigate = useNavigate()
 
-    // DRAWER
+
+
+    useEffect(() => {
+        let isCancelled = false
+        console.log('test')
+        axios.get(`http://localhost:3005/job-offer/all`)
+            .then(x => {
+                if (!isCancelled) setJobOffer(x.data)
+                console.log(x.data)
+            })
+            .catch(err => console.log(err.response.data))
+        return () => {
+            isCancelled = true
+        }
+    }, [_id])
 
     const [state, setState] = React.useState({
         right: false,
@@ -637,9 +631,10 @@ function JobView() {
             programmingLanguage: selectProgrammingLanguage
         }
         axios.post("http://localhost:3005/job-offer/criteria", writeData)
-            .then(x => { console.log(x)
+            .then(x => {
+                console.log(x)
                 setJobOffer(x.data)
-            }).then( 
+            }).then(
                 // window.location.reload(true)
             )
     }
@@ -656,7 +651,7 @@ function JobView() {
             </Container>
             <Container maxWidth="sm">
 
-                <Stack direction='column' spacing={10}>
+                <Stack direction='column' spacing={20}>
                     <div
                         sx={{
                             bgcolor: 'background.paper',
@@ -833,19 +828,6 @@ function JobView() {
 
 
 
-    useEffect(() => {
-        let isCancelled = false
-        console.log('test')
-        axios.get(`http://localhost:3005/job-offer/view/${_id}`)
-            .then(x => {
-                if (!isCancelled) setJobOffer(x.data)
-            })
-            .catch(err => console.log(err.response.data))
-        return () => {
-            isCancelled = true
-        }
-    }, [_id])
-
 
 
     const listJobOffer = () => {
@@ -856,6 +838,7 @@ function JobView() {
                         <ListItem
                             alignItems="flex-start"
                             sx={sxListItem}
+                            onClick={handleShow}
                             disablePadding
                         >
                             <ListItemAvatar>
@@ -886,11 +869,10 @@ function JobView() {
                                         </Typography>
 
                                         <Typography
-                                            sx={{ display: 'block', width: "60%", textOverflow: 'ellipsis' }}
+                                            sx={{ display: 'block', width: "70%", textOverflow: 'ellipsis' }}
                                             component="span"
                                             variant="body2"
                                             color="text.primary"
-
                                         >
                                             {x.streetAddress}
                                         </Typography>
@@ -907,10 +889,12 @@ function JobView() {
     }
     return (
         <>
+
+
             <Box sx={sxContainer}>
                 <Box sx={sxMenu}>
                     <div>{renderDrawer()} </div>
-                    <List sx={{ width: '100%', minWidth: '', bgcolor: 'background.paper' }}>
+                    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                         {listJobOffer()}
                     </List>
                 </Box>

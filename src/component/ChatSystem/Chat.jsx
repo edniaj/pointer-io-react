@@ -16,7 +16,8 @@ import axios from 'axios';
 import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import { createContext } from 'react';
 import { messageContext } from './ChatSystem';
-
+import { Fab } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const sxFragment = { display: 'flex', height: "100%", flexDirection: "column" }
 const sxDisplayMessage = {
@@ -50,7 +51,7 @@ function Chat() {
   const handleInput = e => setMessaging(e.target.value)
   const { pathname } = useLocation()
   const [messageId, setMessageId] = useState([])
-  const { cacheData, setCacheData } = useContext(messageContext)
+  const { cacheData, setCacheData , showOutlet, setShowOutlet} = useContext(messageContext)
   let navigate = useNavigate()
 
   let from = Cookies.get('_id') // Me 
@@ -83,25 +84,31 @@ function Chat() {
     )
   }
   useEffect(() => {
+    let isCancelled = false
     setInterval(() => {
       let putData = {
         chatId,
         from
       }
-      axios.put(`http://localhost:3005/messageCache/clear/`, putData)
+      if (!isCancelled) axios.put(`http://localhost:3005/messageCache/clear/`, putData)
     }, 1000);
-
-  }, []) // This will clear all the unread count from the cache
+    return () => {
+      isCancelled = true
+    }
+  }, [chatId]) // This will clear all the unread count from the cache
 
   useEffect(() => {
+    let isCancelled = false
     setInterval(() => {
       axios.post(("http://localhost:3005/message/criteria"), { chatId })
         .then(x => {
-          setMessageId(x.data)
+          if (!isCancelled) setMessageId(x.data)
         })
     }, 1000);
-
-  }, []) // This will clear all the unread count from the cache
+    return () => {
+      isCancelled = true
+    }
+  }, [chatId]) // This will clear all the unread count from the cache
 
   const listMessages = () => {
     return (
@@ -111,9 +118,9 @@ function Chat() {
             <Fragment key={x._id}>
               <ChatMsg
                 side={'right'}
-                messages={[x.message]}
+                messages={Array.isArray(x.message) ? x.message : [x.message]}
               />
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{ textAlign: 'right' }}>
                 {parseTime(x.timestamp)}
               </Typography>
             </Fragment>)
@@ -121,7 +128,7 @@ function Chat() {
           return (<Fragment key={x._id}>
             <ChatMsg
               avatar={friendImage}
-              messages={[x.message]}
+              messages={Array.isArray(x.message) ? x.message : [x.message]}
             />
             <Typography variant="body2" align="left">
               {parseTime(x.timestamp)}
@@ -134,7 +141,19 @@ function Chat() {
 
   return (
     < Box key="chatDetail" sx={sxFragment}>
-
+      <Fab
+        sx={{
+          margin: '1em', backgroundColor: 'royalblue', color: 'white', position: 'sticky', top: 0,
+          display: {
+            xs: showOutlet ? 'block' : 'none',
+            lg: 'none'
+          }
+        }}
+        aria-label='add'
+        onClick={() => setShowOutlet(!showOutlet)}
+      >
+        <ArrowBackIcon />
+      </Fab>
 
       <Box sx={sxDisplayMessage}>
         {/* {JSON.stringify(messageId)} */}
@@ -151,7 +170,7 @@ function Chat() {
             style={{ height: "100%", padding: 20 }}
           />
         </FormControl>
-        <Button endIcon={<SendIcon />} sx={{ flexGrow: 1 }} onClick={handlePost}>
+        <Button endIcon={<SendIcon />} sx={{ flexGrow: 1, backgroundColor:"#cde7f0", "&:hover":{backgroundColor:"blue",color:"white"} }} onClick={handlePost}>
           Submit
         </Button>
       </Box>
@@ -164,54 +183,3 @@ function Chat() {
 
 export default Chat;
 
-/*
-        <ChatMsg
-          avatar={''}
-          messages={[
-            'Hi Jenny, How r u today?',
-            'Did you train yesterday',
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat lacus laoreet non curabitur gravida.',
-          ]}
-        />
-        <ChatMsg
-          side={'right'}
-          messages={[
-            "Great! What's about you?",
-            'Of course I did. Speaking of which check this out',
-          ]}
-        /><ChatMsg
-          avatar={''}
-          messages={[
-            'Hi Jenny, How r u today?',
-            'Did you train yesterday',
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat lacus laoreet non curabitur gravida.',
-          ]}
-        />
-        <ChatMsg
-          side={'right'}
-          messages={[
-            "Great! What's about you?",
-            'Of course I did. Speaking of which check this out',
-          ]}
-        /><ChatMsg
-          avatar={''}
-          messages={[
-            'Hi Jenny, How r u today?',
-            'Did you train yesterday',
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat lacus laoreet non curabitur gravida.',
-          ]}
-        />
-        <ChatMsg
-          side={'right'}
-          messages={[
-            "Great! What's about you?",
-            'Of course I did. Speaking of which check this out',
-          ]}
-        /><ChatMsg
-          side={'right'}
-          messages={[
-            "Great! What's about you?",
-            'Of course I did. Speaking of which check this out',
-          ]}
-        />
-*/

@@ -3,7 +3,7 @@ import Home from './component/Home'
 import About from './component/About'
 import Error from './component/Error'
 import Judge from './component/Judge'
-import Login from './component/Login'
+import Login from './component/ProtectedRoutes'
 import Register from './component/Register/Register'
 import Profile from './component/Profile'
 import { createContext, useState } from 'react'
@@ -15,6 +15,8 @@ import ChatSystem from './component/ChatSystem/ChatSystem'
 import Chat from './component/ChatSystem/Chat'
 import JobView from './component/JobView/JobView'
 import JobViewDetail from './component/JobView/JobViewDetail'
+import ProtectedRoutes from './component/ProtectedRoutes'
+import Logout from './component/Logout'
 
 export const loginContext = createContext(null)
 export const tagOptionContext = createContext(null)
@@ -152,7 +154,8 @@ function App() {
   ]
 
   return (
-    <div className='App'>
+
+    <div className='App' >
       <BrowserRouter>
         <loginContext.Provider value={{ login, setLogin }}>
           <tagOptionContext.Provider value={{
@@ -161,27 +164,31 @@ function App() {
             framework,
             fieldOfStudy
           }}>
-            
-            <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='profile/:id' element={<Profile />} />
-              <Route path='login' element={<Login />} />
-              <Route path='Register' element={<Register />} />
-              <Route path='about' element={<About />} />
-              <Route path='judge' element={<Judge />} />
 
-              <Route path='job' element={<JobView />}>  {/* This is for regular users that are finding job */}
-                <Route path=':id' element={<JobViewDetail />} />
+            <Routes>
+              <Route element={<ProtectedRoutes />}>
+                <Route path='/' element={<Home />} />
+                <Route path='profile/:id' element={<Profile />} />
+
+                <Route path='logout' element={<Logout />} />
+                <Route path='judge' element={<Judge />} />
+                <Route path='job' element={<JobView />}>  {/* This is for regular users that are finding job */}
+                  <Route path=':id' element={<JobViewDetail />} />
+                </Route>
+                <Route path='job/edit' element={<JobEdit />}>  {/* This is for job creators to edit  */}
+                  <Route path=':id' element={<JobEditDetail />} />
+                </Route>
+                <Route path='job/create' element={<JobCreate />} /> {/* This is for creating new job post*/}
+
+                <Route path='/chat' element={<ChatSystem />}>
+                  <Route path=':id' element={<Chat />} />
+                </Route>
               </Route>
-              <Route path='job/edit' element={<JobEdit />}>  {/* This is for job creators to edit  */}
-                <Route path=':id' element={<JobEditDetail />} /> 
-              </Route>
-              <Route path='job/create' element={<JobCreate />} /> {/* This is for creating new job post*/}
-              <Route path='/chat' element={<ChatSystem/>}>
-                <Route path=':id' element={<Chat/>} />  
-              </Route>
+              <Route path='register' element={<Register />} />
+
 
               <Route element={<Error />} />
+
             </Routes>
           </tagOptionContext.Provider>
         </loginContext.Provider>

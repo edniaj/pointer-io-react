@@ -21,22 +21,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useContext } from 'react';
 import { createContext } from 'react';
-import Popper from '@mui/material/Popper';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import { Alert } from '@mui/material';
+import Navbar from '../Navbar'
 
-const sxContainer = {
-  display: 'flex',
-  flexDirection: 'row',
-  height: '80vh',
-  marginTop: '10vh',
-  width: '100vw'
-}
+
 
 const sxListItem = {
-  height: '136px',
-  // cursor: 'pointer',
+  cursor: 'pointer',
+  minHeight: "136px",
   '&:hover': {
     backgroundColor: 'lightskyblue'
   }
@@ -48,24 +39,13 @@ const sxIcon = {
   },
   marginRight: '1em'
 }
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  pt: 2,
-  px: 4,
-  pb: 3,
-};
+
 export const jobContext = createContext(null)
 
 function JobEdit() {
   let _id = Cookies.get('_id')
 
   const [jobOffer, setJobOffer] = useState([])
-  const [displayIndex, setDisplayIndex] = useState(0)
   const [showOutlet, setShowOutlet] = useState(false)
   const sxMenu = {
     border: 1,
@@ -102,6 +82,12 @@ function JobEdit() {
       lg: 6
     }
   }
+  const sxContainer = {
+  display: 'flex',
+  flexDirection: 'row',
+  height: '100%',
+  width: '100%',
+}
   let navigate = useNavigate()
 
   const parseTime = (date) => {
@@ -210,6 +196,8 @@ function JobEdit() {
 
   return (
     <>
+
+
       <Box sx={sxContainer}>
         <Box sx={sxMenu}>
           <List sx={{ width: '100%', bgcolor: 'background.paper' }}>

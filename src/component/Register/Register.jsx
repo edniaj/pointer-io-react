@@ -29,6 +29,11 @@ import Stack from '@mui/material/Stack'
 import { useNavigate } from 'react-router-dom'
 import RemoveIcon from '@mui/icons-material/Remove'
 import { Divider } from '@mui/material'
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import { Tabs } from '@mui/material';
+import { Tab } from '@mui/material';
+import Navbar from '../Navbar'
+import Cookies from 'js-cookie'
 const axios = require('axios')
 
 // Add image url later
@@ -457,8 +462,14 @@ const countries = [
   { code: 'ZM', label: 'Zambia', phone: '260' },
   { code: 'ZW', label: 'Zimbabwe', phone: '263' }
 ]
+const sxField = {
+  bgcolor: 'background.paper',
+  boxShadow: 1,
+  borderRadius: 2,
+  width: "100%",
+}
 
-function Register () {
+function Register() {
   const [formData, setFormData] = useState({
     education: {
       0: {}
@@ -466,13 +477,12 @@ function Register () {
     licenseAndCertificate: {
       0: {}
     },
-    follower: [],
-    following: [],
-    profilePicture: ''
+    imageUrl: ''
   })
   const [educationCount, setEducationaCount] = useState(1)
   const [licenseCount, setLicenseCount] = useState(1)
   const [showPassword, setShowPassword] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('a')
 
   let navigate = useNavigate()
   // This is to populate education field inside the form
@@ -530,16 +540,18 @@ function Register () {
         delete clone['licenseAndCertificate'][key]
       }
     }
+
     // console.log(`Sending data \n ${clone}`)
     await axios
       .post('http://localhost:3005/register', clone)
       .then(res => {
-        navigate('../login')
-        console.log(res.data)
+        Cookies.set('email', formData['email'], { expires: 7 })
+        Cookies.set('password', formData['password'], { expires: 7 })
+        Cookies.set('_id', res.data, { expires: 7 })
+        navigate('../') // Important
       })
       .catch(err => {
-        navigate(-1)
-        console.log(err.response.data)
+        setErrorMessage(err.response.data)
       })
   }
 
@@ -609,8 +621,8 @@ function Register () {
                     value={formData[fieldName][index]['schoolName']}
                     name='schoolName'
                     onChange={e => handleArray(e, fieldName, index)}
-                    // error
-                    // helperText=''
+                  // error
+                  // helperText=''
                   ></TextField>
                 </FormControl>
               </div>
@@ -711,6 +723,7 @@ function Register () {
               ></OutlinedInput>
             </FormControl>
 
+
             <FormControl>
               <InputLabel>Issuing organisation</InputLabel>{' '}
               {/*i.e. microsoft certified network security */}
@@ -782,11 +795,38 @@ function Register () {
   }
 
   return (
-    <div>
-      <Container>
+    <div style={{ margin: 0 }}>
+      <Box sx={{
+        display: errorMessage ? "block" : "none",
+        backgroundColor: "#f44336",
+        color: 'white',
+        minHeight: "3vh",
+        width: "100%",
+        position: 'fixed',
+        zIndex: 999,
+        marginBottom: 100,
+        top: 0
+      }}>
+        {errorMessage}
+      </Box>
+      <Box>
+        <Tabs >
+          <Tab label="Home" iconPosition="start" sx={{
+            marginTop: "4vh",
+            cursor: 'pointer',
+            '&:hover': {
+              backgroundColor: 'lightskyblue'
+            }
+          }} icon={<KeyboardBackspaceIcon />} onClick={() => navigate('../')} />
+        </Tabs>
+      </Box>
+
+
+      <Container sx={{ marginTop: 2 }}>
+
         <div>
-          <FormControl>
-            {/* <InputLabel>Email</InputLabel> */}
+          <FormControl
+            sx={sxField}>
             <TextField
               label='Email'
               value={formData['email']}
@@ -797,11 +837,13 @@ function Register () {
                 validateEmail(formData['email']) &&
                 'Please enter a valid email address'
               }
+              sx={sxField}
             ></TextField>
           </FormControl>
         </div>
         <div>
-          <FormControl>
+          <FormControl
+            sx={sxField}>
             {' '}
             {/*password*/}
             <InputLabel> Password</InputLabel>
@@ -826,7 +868,25 @@ function Register () {
           </FormControl>
         </div>
         <div>
-          <FormControl>
+          <FormControl
+            sx={sxField}>
+            <TextField
+              variant='outlined'
+              label='Profile picture'
+              name='imageUrl'
+              onChange={handleInput}
+              value={formData['imageUrl']}
+              error={formData['imageUrl'].length === 0}
+              helperText={
+                validateString(formData['imageUrl']) &&
+                'Field must consist at least a character'
+              }
+            ></TextField>
+          </FormControl>
+        </div>
+        <div>
+          <FormControl
+            sx={sxField}>
             <TextField
               variant='outlined'
               label='First name'
@@ -839,6 +899,9 @@ function Register () {
                 'Field must consist at least a character'
               }
             ></TextField>
+          </FormControl>
+          <FormControl
+            sx={sxField}>
             <TextField
               variant='outlined'
               label='Last name'
@@ -853,15 +916,14 @@ function Register () {
             ></TextField>
           </FormControl>
         </div>
-        <div>
-          <FormControl></FormControl>
-        </div>
+
 
         <div>
-          <FormControl>
+          <FormControl
+            sx={sxField}>
             <Autocomplete
               id='country-select-demo'
-              sx={{ width: 300 }}
+
               options={countries}
               name='countryCode'
               onChange={(value, event) => {
@@ -902,9 +964,15 @@ function Register () {
             </FormHelperText>
           </FormControl>
 
-          <InputLabel>Country code</InputLabel>
-          <OutlinedInput value={formData['countryCode']} disabled />
+
+        </div>
+        <div style={{ width: "100%", display: "flex" }}>
           <FormControl>
+            <TextField value={formData['countryCode']}
+              placeholder="Country code"
+              disabled />
+          </FormControl>
+          <FormControl sx={sxField}>
             <TextField
               label='Contact number'
               value={formData['contactNumber']}
@@ -918,8 +986,13 @@ function Register () {
             ></TextField>
           </FormControl>
         </div>
-        <div>
-          <FormControl error={validateRadio(formData['jobAvailability'])}>
+
+
+        <Box sx={{ textAlign: "left" }}>
+          <FormControl
+
+            error={validateRadio(formData['jobAvailability'])}>
+
             <FormLabel id='demo-radio-buttons-group-label'>
               Looking for job ?
             </FormLabel>
@@ -950,7 +1023,7 @@ function Register () {
                 validateRadio(formData['jobAvailability'])}
             </FormHelperText>
           </FormControl>
-        </div>
+        </Box>
 
         <Typography variant='h4'>Education</Typography>
         {populateEducation()}
@@ -1013,14 +1086,14 @@ export default Register
 /*
 Master plan
   Deisgn database properly
-  Check online how to do form control 
+  Check online how to do form control
 
 
   Need to do[]
   https://mui.com/components/autocomplete/#heading-autocomplete-autofill - For password form
 
-  https://mui.com/components/autocomplete/#multiple-values - Education 
-  
+  https://mui.com/components/autocomplete/#multiple-values - Education
+
 
 */
 
