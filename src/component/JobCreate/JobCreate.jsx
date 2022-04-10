@@ -113,14 +113,17 @@ function JobCreate() {
             md: "center",
             xs: "left",
             backgroundColor: "rgb(255,255,255)",
-            marginTop: "5vw "
+            marginTop: {
+              xs:"10vh",
+              md:"5vh"
+            }
           },
           // textAlign:"left"
         }}
       >
         <Stack direction='column' spacing={2}>
 
-          <div>
+          <div style={{marginTop:"10vh"}}>
             <Typography variant='h3'>Create posting</Typography>
             <FormControl
               sx={sxField}
