@@ -17,6 +17,8 @@ Acceptance Criteria
 2. User must be able to find the job post thru a filter option
 3. There must be a private messaging function.
 
+
+
 ### Job Seekers
 Tan Ah Lian just finished her bootcamp and would like to find a job. However, there is a lot of spam and lowball offers on traditional job seekers website. It is an employer's market, and there doesn't seem to be a lot of places where employees can advertise that they are looking for a job. She goes on Pointer.io to post her job request and gets matched within a few days.
 
@@ -46,7 +48,7 @@ Acceptance Criteria
 
 ## Database structure
 [Imgur](https://i.imgur.com/WTtf66H.png)
-
+![erd](https://user-images.githubusercontent.com/26456566/162623668-7285f2ed-c8f2-4251-8a19-f5d2951e8d19.png)
 ## Technologies Used
 
 HTML5
