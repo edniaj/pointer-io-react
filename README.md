@@ -1,7 +1,8 @@
 # TGC-16 Project 2
 
 # Title: Pointer.io
-
+#Website
+https://tiny-hamster-468f0e.netlify.app/
 ## Summary
 
 Pointer.io is a social media plus job finding website, designed to be a Linkedin competitor, whilst improving everything that Linkedin is bad at. It is meant to be occupation specific, for tech roles and techies only instead of catering to a broad based crowd. The vision is for the site to be technically focused. Pointer.io strives to be lightweight and simple to use. 
