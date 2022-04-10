@@ -55,7 +55,6 @@ function Navbar() {
 
       <Box sx={sxLoggedOut}>
         <Tabs value={value} onChange={handleChange} aria-label="nav tabs example">
-          <Tab label="Home" iconPosition="start" icon={<HomeOutlinedIcon />} onClick={() => navigate('./')} />
           <Tab label="Register" iconPosition="start" icon={<GroupAddIcon />} onClick={() => navigate('./register')} />
         </Tabs>
       </Box>

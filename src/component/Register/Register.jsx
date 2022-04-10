@@ -468,7 +468,14 @@ const sxField = {
   borderRadius: 2,
   width: "100%",
 }
-
+const sxContainer = {
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  width: '100vw',
+  marginTop: '10vh',
+  backgroundColor: "white",
+}
 function Register() {
   const [formData, setFormData] = useState({
     education: {
@@ -826,7 +833,7 @@ function Register() {
       </Box>
 
 
-      <Container sx={{ marginTop: 2 }}>
+      <Container sx={sxContainer}>
 
         <div>
           <FormControl
