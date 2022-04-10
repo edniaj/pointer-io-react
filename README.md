@@ -1,70 +1,83 @@
-# Getting Started with Create React App
+# TGC-16 Project 2
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Title: Pointer.io
 
-## Available Scripts
+## Summary
 
-In the project directory, you can run:
+Pointer.io is a social media plus job finding website, designed to be a Linkedin competitor, whilst improving everything that Linkedin is bad at. It is meant to be occupation specific, for tech roles and techies only instead of catering to a broad based crowd. The vision is for the site to be technically focused. Pointer.io strives to be lightweight and simple to use. 
 
-### `npm start`
+## User Stories
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Technical hobbyists
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Tan Ah Kow is a Computer Science undergraduate, 25 years old. He would like to discuss more about binary tress about fellow peers, but in his school, he couldn't find any like minded friends. He goes onto Pointer.io, looks up a tag called Binary Tree, and inside the tag he could find company that specialises in binary tree and talk to them.
 
-### `npm test`
+Acceptance Criteria
+1. Company must be able to tag their job description.
+2. User must be able to find the job post thru a filter option
+3. There must be a private messaging function.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Job Seekers
+Tan Ah Lian just finished her bootcamp and would like to find a job. However, there is a lot of spam and lowball offers on traditional job seekers website. It is an employer's market, and there doesn't seem to be a lot of places where employees can advertise that they are looking for a job. She goes on Pointer.io to post her job request and gets matched within a few days.
 
-### `npm run build`
+Acceptance Criteria
+1. It is a P2P experience for job seekers and employers. No middle man involved. 
+2. Job seekers must be able to post their expectations, location preference, job requirement. 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Employers
+Linkedlol has just finished their series A and need to hire 1000 employees to spend all the VC money they recieved. The issues with traditional job seeking websites is that it is one-way - they post their job scope and wait for resumes to flood in. However, Linkedlol thinks that missing out on a lot of talent who simply weren't fortunate to come across their job listing - they would prefer to search through a database of job seekers themselves and decide.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Acceptance Criteria
+1. Employer must be able to Create, Read, Update and Delete their job offer
+2. Employee must be able to apply for join thru the chat system
+3. Clear communication system
+4. Strict validation in the registration field to prevent duplicate accounts
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Features
 
-### `npm run eject`
+1. There must be a user authentication system.
+2. There must be a chat system. 
+3. There must be a job portal
+4. Employer must be contactable through job portal
+5. Workplace must be clear and concise
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Website Structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Database structure
+[Imgur](https://i.imgur.com/WTtf66H.png)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Technologies Used
 
-## Learn More
+HTML5
+CSS3
+JavaScript
+React
+Material UI
+Leaflet
+MongoDB
+Axios
+Express
+Cors
+Visual Studio Code
+Git
+GitHub
+Netlify
+Heroku
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Test Cases
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Deployment
 
-### Code Splitting
+Base directory: Not set
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Build command: CI=false npm run build
 
-### Analyzing the Bundle Size
+Publish directory: build
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Hosted on Netlify free plan. To deploy, fork this code, and link your Github account with Netlify. Use the above settings. 
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Credits and Acknowledgement
+https://mui.com/
+https://mui-treasury.com/
+https://codesandbox.io/
