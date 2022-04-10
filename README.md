@@ -1,5 +1,6 @@
 # TGC-16 Project 2
-![image](https://user-images.githubusercontent.com/26456566/162624798-4995676a-ad36-4a58-8d97-2697a6edfd00.png)
+![image](https://user-images.githubusercontent.com/26456566/162624829-b9c2e031-1901-4ded-b3b6-cf3b6d80f4b0.png)
+
 
 # Title: Pointer.io
 #Website
