@@ -50,29 +50,29 @@ Acceptance Criteria
 ## Website Structure
 There will be 8 pages.
 
-Register
+### Register
 Users register with an email, password as login credentials. Allows users to add personal information such as contact number, education background etc... Redirects user to login page
 
-Login
+### Login
 User login with email and password.
 After loggin in, it redirects user to homepage
 
-Home page
+### Home page
 Homepage will brief users on what the web structure of the page and what kind of functions they can use. 
 
-Chat
+### Chat
 Allow job seekers to chat with employers.
 
-Job
+### Job
 Allow users to check all job posting. There is a filter option for users to search, users can filter job posting based on : frameworks, programming language, field of study, salary range, job title and organization.
 
-Edit jobs
+### Edit jobs
 Allow job creators to edit posting.
 
-Create Posting
+### Create Posting
 Allow users to create job posting.
 
-Logout
+### Logout
 Clear users cookie and log out user.
 
 
