@@ -503,7 +503,7 @@ function JobEditDetail() {
     let timestamp = JSON.stringify(new Date().getTime()) // Unix timestamp
     formData['minPay'] = parseInt(formData['minPay'])
     formData['maxPay'] = parseInt(formData['maxPay'])
-    axios.put(`https://warm-citadel-62203.herokuapp.com/job-offer/edit/${_id}`, {
+    axios.put(`http://localhost:3005/job-offer/edit/${_id}`, {
       creator: Cookies.get('_id'),
       ...formData,
       jobTags: selectJob,
@@ -537,7 +537,7 @@ function JobEditDetail() {
   }
   useEffect(() => {
     let isCancelled = false
-    axios.get(`https://warm-citadel-62203.herokuapp.com/job-offer/${_id}`).then(x => {
+    axios.get(`http://localhost:3005/job-offer/${_id}`).then(x => {
       if (!isCancelled) {
         let res = x.data
         setFormData(res)

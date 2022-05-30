@@ -549,7 +549,7 @@ function Register() {
     }
 
     await axios
-      .post('https://warm-citadel-62203.herokuapp.com/register', clone)
+      .post('http://localhost:3005/register', clone)
       .then(res => {
         Cookies.set('email', formData['email'], { expires: 7 })
         Cookies.set('password', formData['password'], { expires: 7 })

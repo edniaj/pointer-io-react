@@ -80,7 +80,7 @@ function JobViewDetail() {
 
     useEffect(() => {
         let isCancelled = false
-        axios.get(`https://warm-citadel-62203.herokuapp.com/job-offer/${_id}`).then(x => {
+        axios.get(`http://localhost:3005/job-offer/${_id}`).then(x => {
             if (!isCancelled) {
                 let res = x.data
                 setFormData(res)
@@ -103,7 +103,7 @@ function JobViewDetail() {
             _userId,
             jobCreator
         }
-        axios.post('https://warm-citadel-62203.herokuapp.com/chat/add', writeData)
+        axios.post('http://localhost:3005/chat/add', writeData)
             .then(x => {
                 navigate(`../../chat/${x.data}`)
             })

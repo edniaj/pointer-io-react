@@ -102,7 +102,7 @@ function JobEdit() {
   }
 
   const handleDelete = (x) => {
-    axios.delete(`https://warm-citadel-62203.herokuapp.com/job-offer/delete/${x['_id']}`)
+    axios.delete(`http://localhost:3005/job-offer/delete/${x['_id']}`)
       .then(() => {
         setJobOffer([])
         navigate("./")
@@ -114,7 +114,7 @@ function JobEdit() {
 
   useEffect(() => {
     let isCancelled = false
-    axios.get(`https://warm-citadel-62203.herokuapp.com/job-offer/view/${_id}`)
+    axios.get(`http://localhost:3005/job-offer/view/${_id}`)
       .then(x => {
         // console.log(x.data[0])
         if (!isCancelled) setJobOffer(x.data)

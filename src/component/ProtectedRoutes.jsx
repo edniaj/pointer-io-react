@@ -37,7 +37,7 @@ function ProtectedRoutes() {
   }
   const handlePOST = async () => {
     await axios
-      .post('https://warm-citadel-62203.herokuapp.com/login', { email, password })
+      .post('http://localhost:3005/login', { email, password })
       .then(res => {
         if (res.data === [] || undefined) throw Error('User not found')
         setLogin(true)
@@ -57,14 +57,14 @@ function ProtectedRoutes() {
     let isCancelled = false
     const handleCookie = async () => {
       await axios
-        .post('https://warm-citadel-62203.herokuapp.com/login', {
+        .post('http://localhost:3005/login', {
           email: Cookies.get('email'),
           password: Cookies.get('password')
         })
         .then(async (res) => {
           if (!isCancelled) setLogin(true)
           await setLogin(true)
-          navigate("./job")
+          navigate("./")
         })
         .catch(err => {
           console.log(err.response.data)
