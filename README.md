@@ -79,6 +79,11 @@ Clear users cookie and log out user.
 
 ## Database structure
 ![erd](https://user-images.githubusercontent.com/26456566/162623718-81b6e508-be51-4fb4-a2e0-f5f86f90fdb2.png)
+
+## Colour pallette
+![colorpallete](https://user-images.githubusercontent.com/26456566/171202174-7ebbd64f-2249-4034-a1fa-304dcadb49a1.png)
+link: https://coolors.co/edf4fc-649eff-7bb9ff-d9e3ff
+
 ## Technologies Used
 
 HTML5
