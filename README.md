@@ -80,9 +80,14 @@ Clear users cookie and log out user.
 ## Database structure
 ![erd](https://user-images.githubusercontent.com/26456566/162623718-81b6e508-be51-4fb4-a2e0-f5f86f90fdb2.png)
 
-## Colour pallette
+## Colour palette
 ![colorpallete](https://user-images.githubusercontent.com/26456566/171202174-7ebbd64f-2249-4034-a1fa-304dcadb49a1.png)
 link: https://coolors.co/edf4fc-649eff-7bb9ff-d9e3ff
+The choice of color was primarily based on other job portal. Blue, white and grayish tone is appropriate for a professional website (job portal).
+
+##Font family
+Majority of the font was in Helvetica as it is apt for a professional website.
+Slogan uses Segoe Script
 
 ## Technologies Used
 
@@ -101,6 +106,20 @@ Git
 GitHub
 Netlify
 Heroku
+
+# TEST CASES
+| #  | Description | Steps | Expected|
+| ------------- | ------------- | ------------- | ------------- |
+| 1 | Login page must have validation| Incorect user information entered | The login page should prompt an error message |
+| 2 | Register page must have server side validation | Go to registration page and edit component value, post it with the submit button | it should not be able to register user. |
+| 3 | Homepage mobile responsiveness | Adjust page to check for mobile responsiveness | Div should not overlap with other div |
+| 4 | Job webpage should display all job offers| Go to the /job route | check if it has many job offer (including self-created ones) |
+| 5 | Create job offers has validation | Leave the fields empty and ke submit | It should not be able to Post. Error message should flash below submit button |
+| 6 | Edit job offers | Go to edit job offer routes | It should display all job offers that you have personally created. You should be able to edit and delete job listing |
+| 7 | Chat | Apply for job under job route. When you apply, it will automatically send message to employer.  | You should be able to continue the conversation with employer after applying |
+| 8 | Chat should be mobile responsive | Use web tools to check for mobile responsiveness | When screen is small, it should only display the message that you are currently chating with |
+
+
 
 
 ## Deployment
