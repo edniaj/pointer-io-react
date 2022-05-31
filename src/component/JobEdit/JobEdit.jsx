@@ -29,7 +29,7 @@ const sxListItem = {
   cursor: 'pointer',
   minHeight: "136px",
   '&:hover': {
-    backgroundColor: 'lightskyblue'
+    backgroundColor: '#7BB9FF'
   }
 }
 const sxIcon = {
@@ -55,7 +55,7 @@ function JobEdit() {
     }
     ,
     flex: {
-      xs: 1,
+      xs: 0,
       lg: 4
     },
     overflow: 'auto',
@@ -79,6 +79,7 @@ function JobEdit() {
     }
     ,
     flex: {
+      xs:1,
       lg: 6
     }
   }
@@ -102,7 +103,7 @@ function JobEdit() {
   }
 
   const handleDelete = (x) => {
-    axios.delete(`http://localhost:3005/job-offer/delete/${x['_id']}`)
+    axios.delete(`https://warm-citadel-62203.herokuapp.com/job-offer/delete/${x['_id']}`)
       .then(() => {
         setJobOffer([])
         navigate("./")
@@ -114,7 +115,7 @@ function JobEdit() {
 
   useEffect(() => {
     let isCancelled = false
-    axios.get(`http://localhost:3005/job-offer/view/${_id}`)
+    axios.get(`https://warm-citadel-62203.herokuapp.com/job-offer/view/${_id}`)
       .then(x => {
         // console.log(x.data[0])
         if (!isCancelled) setJobOffer(x.data)
@@ -123,7 +124,7 @@ function JobEdit() {
     return () => {
       isCancelled = true
     }
-  }, [jobOffer])
+  }, [])
 
 
   const listJobOffer = () => {

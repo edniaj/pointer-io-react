@@ -549,7 +549,7 @@ function Register() {
     }
 
     await axios
-      .post('http://localhost:3005/register', clone)
+      .post('https://warm-citadel-62203.herokuapp.com/register', clone)
       .then(res => {
         Cookies.set('email', formData['email'], { expires: 7 })
         Cookies.set('password', formData['password'], { expires: 7 })
@@ -815,7 +815,7 @@ function Register() {
       }}>
         {errorMessage}
       </Box>
-      <Box>
+      <Box sx={{backgroundColor:"white",marginBottom:0}}>
         <Tabs >
           <Tab label="Home" iconPosition="start" sx={{
             backgroundColor:"white",
@@ -832,9 +832,9 @@ function Register() {
       </Box>
 
 
-      <Container sx={sxContainer}>
+      <Container sx={{...sxContainer, backgroundColor:"white",marginTop:0}}>
 
-        <div>
+        <div style={{marginTop:"5vh", marginBottom:"1vh"}}>
           <FormControl
             sx={sxField}>
             <TextField
@@ -851,7 +851,7 @@ function Register() {
             ></TextField>
           </FormControl>
         </div>
-        <div>
+        <div style={{marginTop:"1vh", marginBottom:"1vh"}}>
           <FormControl
             sx={sxField}>
             {' '}
@@ -877,7 +877,7 @@ function Register() {
             </FormHelperText>
           </FormControl>
         </div>
-        <div>
+        <div style={{marginTop:"1vh", marginBottom:"1vh"}}>
           <FormControl
             sx={sxField}>
             <TextField
@@ -894,7 +894,7 @@ function Register() {
             ></TextField>
           </FormControl>
         </div>
-        <div>
+        <div style={{marginTop:"1vh", marginBottom:"1vh"}}>
           <FormControl
             sx={sxField}>
             <TextField
@@ -928,7 +928,7 @@ function Register() {
         </div>
 
 
-        <div>
+        <div style={{marginTop:"1vh", marginBottom:"1vh"}}>
           <FormControl
             sx={sxField}>
             <Autocomplete

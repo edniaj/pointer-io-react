@@ -16,6 +16,7 @@ import { useEffect } from 'react'
 import Stack from '@mui/material/Stack'
 import Navbar from './Navbar'
 import { useLayoutEffect } from 'react'
+import { Carousel } from 'react-bootstrap'
 
 function ProtectedRoutes() {
   let { login, setLogin } = useContext(loginContext)
@@ -23,6 +24,7 @@ function ProtectedRoutes() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [showError, setShowError] = useState(false)
 
   const handleInput = e => {
     if (e.target.name === 'email') {
@@ -37,10 +39,11 @@ function ProtectedRoutes() {
   }
   const handlePOST = async () => {
     await axios
-      .post('http://localhost:3005/login', { email, password })
+      .post('https://warm-citadel-62203.herokuapp.com/login', { email, password })
       .then(res => {
         if (res.data === [] || undefined) throw Error('User not found')
         setLogin(true)
+        setShowError(false)
         const { _id } = res.data
         Cookies.set('email', email, { expires: 7 })
         Cookies.set('password', password, { expires: 7 })
@@ -48,7 +51,7 @@ function ProtectedRoutes() {
 
       })
       .catch(err => {
-        console.log(err.response.data)
+        setShowError(true)
       })
   }
 
@@ -57,7 +60,7 @@ function ProtectedRoutes() {
     let isCancelled = false
     const handleCookie = async () => {
       await axios
-        .post('http://localhost:3005/login', {
+        .post('https://warm-citadel-62203.herokuapp.com/login', {
           email: Cookies.get('email'),
           password: Cookies.get('password')
         })
@@ -94,21 +97,36 @@ function ProtectedRoutes() {
       </Container>
       :
       <>
-        <Container sx={{}}>
-          <Navbar />
-          {JSON.stringify(login)}
+
+        <Navbar />
+
+
+
+
+        <Container sx={{ marginTop: "70px" }}>
+
+
+
           <div style={{
             backgroundColor: "rgb(235,235,235,0.91)",
-            zIndex:5,
-            borderRadius:20,
+            zIndex: 5,
+            borderRadius: 20,
             border: "1px solid black",
-            height: "100vh",
+            height: "600px",
             display: 'flex',
+            flexDirection: "column",
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: "10vh"
+            marginTop: "10vh",
           }}>
+
+            <div style={{ display: showError ? "block" : "none", marginBottom: "5vh", color: "red", border: "1px solid black", padding: "10px" }}>Login Failed - Wrong credentials</div>
+
+            <h2>Pointer.io</h2>
+            <p4 style={{marginBottom:"20px", fontFamily:"Segoe Script"}}>Best job portal since 2022</p4>
             <Stack direction='column' spacing={2}>
+
+
               <FormControl>
                 <InputLabel>Login email</InputLabel>
                 <OutlinedInput
@@ -143,7 +161,15 @@ function ProtectedRoutes() {
                 Login
               </Button>
             </Stack>
+            <Stack sx={{ marginTop: "5vh" }}>
+
+              <div>Username : test@hotmail.com </div>
+              <div>Password: Test1234</div>
+
+            </Stack>
           </div>
+
+
         </Container>
       </>
   )

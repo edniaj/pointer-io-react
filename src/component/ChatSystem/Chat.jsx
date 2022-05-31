@@ -19,7 +19,12 @@ import { messageContext } from './ChatSystem';
 import { Fab } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-const sxFragment = { display: 'flex', height: "100%", flexDirection: "column" }
+const sxFragment = {
+  display: 'flex',
+  height: "100%",
+  flexDirection: "column",
+  width:"100%"
+}
 const sxDisplayMessage = {
   flexGrow: 7,
   overflowX: "hidden",
@@ -51,7 +56,7 @@ function Chat() {
   const handleInput = e => setMessaging(e.target.value)
   const { pathname } = useLocation()
   const [messageId, setMessageId] = useState([])
-  const { cacheData, setCacheData , showOutlet, setShowOutlet} = useContext(messageContext)
+  const { cacheData, setCacheData, showOutlet, setShowOutlet } = useContext(messageContext)
   let navigate = useNavigate()
 
   let from = Cookies.get('_id') // Me 
@@ -66,7 +71,7 @@ function Chat() {
       message: messaging,
       from
     }
-    await axios.post("http://localhost:3005/message/add", writeData)
+    await axios.post("https://warm-citadel-62203.herokuapp.com/message/add", writeData)
       .then(x => {
         setMessaging("")
         setCacheData([])
@@ -89,7 +94,7 @@ function Chat() {
         chatId,
         from
       }
-      if (!isCancelled) axios.put(`http://localhost:3005/messageCache/clear/`, putData)
+      if (!isCancelled) axios.put(`https://warm-citadel-62203.herokuapp.com/messageCache/clear/`, putData)
     }, 1000);
     return () => {
       isCancelled = true
@@ -99,7 +104,7 @@ function Chat() {
   useEffect(() => {
     let isCancelled = false
     setInterval(() => {
-      axios.post(("http://localhost:3005/message/criteria"), { chatId })
+      axios.post(("https://warm-citadel-62203.herokuapp.com/message/criteria"), { chatId })
         .then(x => {
           if (!isCancelled) setMessageId(x.data)
         })
@@ -169,7 +174,7 @@ function Chat() {
             style={{ height: "100%", padding: 20 }}
           />
         </FormControl>
-        <Button endIcon={<SendIcon />} sx={{ flexGrow: 1, backgroundColor:"#cde7f0", "&:hover":{backgroundColor:"blue",color:"white"} }} onClick={handlePost}>
+        <Button endIcon={<SendIcon />} sx={{ flexGrow: 1, backgroundColor: "#7BB9FF", "&:hover": { backgroundColor: "blue", color: "white" } }} onClick={handlePost}>
           Submit
         </Button>
       </Box>

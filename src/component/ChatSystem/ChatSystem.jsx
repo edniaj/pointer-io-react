@@ -17,16 +17,17 @@ const sxContainer = {
   display: 'flex',
   flexDirection: 'row',
   height: '100%',
-  width: '100%',
+  width: '100vw',
   marginTop: '10vh',
-  backgroundColor: "white"
+  backgroundColor: "white",
+
 }
 
 const sxListItem = {
   minHeight: "136px",
   cursor: 'pointer',
   '&:hover': {
-    backgroundColor: 'lightskyblue'
+    backgroundColor: '#7BB9FF'
   }
 }
 const sxIcon = {
@@ -56,7 +57,7 @@ function ChatSystem() {
     }
     ,
     flex: {
-      xs: 1,
+      xs: showOutlet ? 0 : 1,
       lg: 4
     },
     overflow: 'auto',
@@ -70,8 +71,9 @@ function ChatSystem() {
     '&::-webkit-scrollbar-thumb': {
       backgroundColor: 'rgba(0,0,0,.1)',
       outline: '1px solid slategrey'
-    }
+    },
   }
+
   const sxDetail = {
     border: 1,
     display: {
@@ -80,12 +82,14 @@ function ChatSystem() {
     }
     ,
     flex: {
+      xs: 1,
       lg: 6
-    }
+    },
+
   }
   useEffect(() => {
     let isCancelled = false
-    axios.get(`http://localhost:3005/messageCache/${_id}`) // CacheId : {_id, chatId, from, to, lastMessage, unreadCount, timestamp, imageUrl, firstName, lastName}
+    axios.get(`https://warm-citadel-62203.herokuapp.com/messageCache/${_id}`) // CacheId : {_id, chatId, from, to, lastMessage, unreadCount, timestamp, imageUrl, firstName, lastName}
       .then(x => {
         if (!isCancelled) {
           setCacheData(x.data)
@@ -159,7 +163,7 @@ function ChatSystem() {
               <Badge badgeContent={x.unreadCount}
                 sx={{
                   color: '#f84f31', marginRight: 5, marginTop: 5,
-                  display: x.unreadCount ?  'block' : 'none'
+                  display: x.unreadCount ? 'block' : 'none'
                 }}>
                 <NotificationAddIcon fontSize='large' />
               </Badge>

@@ -483,8 +483,6 @@ const countries = [
     { code: 'ZM', label: 'Zambia', phone: '260' },
     { code: 'ZW', label: 'Zimbabwe', phone: '263' }
 ]
-
-
 const sxContainer = {
     display: 'flex',
     flexDirection: 'row',
@@ -492,16 +490,13 @@ const sxContainer = {
     width: '100%',
     marginTop: "10vh"
 }
-
 const sxListItem = {
     minHeight: "136px",
     cursor: 'pointer',
     '&:hover': {
-        backgroundColor: 'lightskyblue'
+        backgroundColor: '#7BB9FF'
     }
 }
-
-
 const sxAutocomplete = {
     bgcolor: 'background.paper',
     boxShadow: 1,
@@ -547,7 +542,7 @@ function JobView() {
         }
         ,
         flex: {
-            xs: 1,
+            xs: showOutlet ? 0 : 1,
             lg: 4
         },
         overflow: 'auto',
@@ -571,6 +566,7 @@ function JobView() {
         }
         ,
         flex: {
+            xs:1,
             lg: 6
         }
     }
@@ -583,7 +579,7 @@ function JobView() {
 
     useEffect(() => {
         let isCancelled = false
-        axios.get(`http://localhost:3005/job-offer/all`)
+        axios.get(`https://warm-citadel-62203.herokuapp.com/job-offer/all`)
             .then(x => {
                 if (!isCancelled) setJobOffer(x.data)
 
@@ -629,7 +625,7 @@ function JobView() {
             fieldOfStudy: selectFieldOfstudy,
             programmingLanguage: selectProgrammingLanguage
         }
-        axios.post("http://localhost:3005/job-offer/criteria", writeData)
+        axios.post("https://warm-citadel-62203.herokuapp.com/job-offer/criteria", writeData)
             .then(x => {
                 setJobOffer(x.data)
             }).then(

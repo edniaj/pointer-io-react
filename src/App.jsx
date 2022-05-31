@@ -12,6 +12,7 @@ import JobViewDetail from './component/JobView/JobViewDetail'
 import ProtectedRoutes from './component/ProtectedRoutes'
 import Logout from './component/Logout'
 
+import { Typography } from '@mui/material'
 export const loginContext = createContext(null)
 export const tagOptionContext = createContext(null)
 
@@ -148,43 +149,52 @@ function App() {
   ]
 
   return (
+    <>
+      <div className='App specialBackground' >
+        <BrowserRouter>
+          <loginContext.Provider value={{ login, setLogin }}>
+            <tagOptionContext.Provider value={{
+              jobOption,
+              programmingLanguage,
+              framework,
+              fieldOfStudy
+            }}>
 
-    <div className='App' >
-      <BrowserRouter>
-        <loginContext.Provider value={{ login, setLogin }}>
-          <tagOptionContext.Provider value={{
-            jobOption,
-            programmingLanguage,
-            framework,
-            fieldOfStudy
-          }}>
+              <Routes>
+                <Route element={<ProtectedRoutes />}>
+                  <Route path='/' element={<Home />} />
 
-            <Routes>
-              <Route element={<ProtectedRoutes />}>
-                <Route path='/' element={<Home />} />
+                  <Route path='logout' element={<Logout />} />
+                  <Route path='job' element={<JobView />}>  {/* This is for regular users that are finding job */}
+                    <Route path=':id' element={<JobViewDetail />} />
+                  </Route>
+                  <Route path='job/edit' element={<JobEdit />}>  {/* This is for job creators to edit  */}
+                    <Route path=':id' element={<JobEditDetail />} />
+                  </Route>
+                  <Route path='job/create' element={<JobCreate />} /> {/* This is for creating new job post*/}
 
-                <Route path='logout' element={<Logout />} />
-                <Route path='job' element={<JobView />}>  {/* This is for regular users that are finding job */}
-                  <Route path=':id' element={<JobViewDetail />} />
+                  <Route path='/chat' element={<ChatSystem />}>
+                    <Route path=':id' element={<Chat />} />
+                  </Route>
                 </Route>
-                <Route path='job/edit' element={<JobEdit />}>  {/* This is for job creators to edit  */}
-                  <Route path=':id' element={<JobEditDetail />} />
-                </Route>
-                <Route path='job/create' element={<JobCreate />} /> {/* This is for creating new job post*/}
-
-                <Route path='/chat' element={<ChatSystem />}>
-                  <Route path=':id' element={<Chat />} />
-                </Route>
-              </Route>
-              <Route path='register' element={<Register />} />
+                <Route path='/register' element={<Register />} />
 
 
 
-            </Routes>
-          </tagOptionContext.Provider>
-        </loginContext.Provider>
-      </BrowserRouter>
-    </div >
+              </Routes>
+            </tagOptionContext.Provider>
+          </loginContext.Provider>
+        </BrowserRouter>
+      </div >
+      {/* <footer style={{ backgroundColor: "white", textDecoration: 'none', position:"fixed", bottom:"0%" }}>
+
+        <Typography sx={{ textDecoration: "none" }}>
+          Documentation&nbsp;&nbsp;
+          <a href="https://github.com/edniaj/pointer-io-react" >Github&nbsp;&nbsp;</a>
+          <span>@2022</span>
+        </Typography>
+      </footer> */}
+    </>
   )
 }
 

@@ -22,6 +22,7 @@ function Navbar() {
 
   const sxLoggedIn = {
     width: "100vw",
+    height: "80px",
     position: "fixed",
     top: 0,
     display: !login ? "none" : "block",
@@ -30,6 +31,7 @@ function Navbar() {
   }
   const sxLoggedOut = {
     width: "100vw",
+    height: "70px",
     position: "fixed",
     top: 0,
     display: !login ? "block" : "none",
@@ -47,7 +49,10 @@ function Navbar() {
           allowScrollButtonsMobile
           scrollButtons="auto" aria-label="nav tabs example"
         >
-          <Tab label="Home" iconPosition="start" icon={<HomeOutlinedIcon />} onClick={() => navigate('./')} />
+          <a href="/">
+            <img src="https://i.ibb.co/nw8fzPp/brand.jpg" className="d-block" style={{ width: "120px", height: "80px" }}></img>
+          </a>
+          <Tab label="Pointer.io" iconPosition="start" icon={<HomeOutlinedIcon />} onClick={() => navigate('./')} />
           <Tab label="Chat" iconPosition="start" icon={<MessageOutlinedIcon />} onClick={() => navigate('./chat')} />
           <Tab label="Job" iconPosition="start" icon={<WorkOutlineIcon />} onClick={() => navigate('./job')} />
           <Tab label="Edit job" iconPosition="start" icon={<EngineeringOutlinedIcon />} onClick={() => navigate('./job/edit')} />
@@ -58,6 +63,7 @@ function Navbar() {
 
       <Box sx={sxLoggedOut}>
         <Tabs value={value} onChange={handleChange} aria-label="nav tabs example">
+          <Tab label="Login" iconPosition="start" icon={<GroupAddIcon />} onClick={() => navigate('./register')} />
           <Tab label="Register" iconPosition="start" icon={<GroupAddIcon />} onClick={() => navigate('./register')} />
         </Tabs>
       </Box>

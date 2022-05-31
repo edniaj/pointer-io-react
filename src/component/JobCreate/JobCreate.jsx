@@ -35,6 +35,8 @@ const sxField = {
   boxShadow: 1,
   borderRadius: 2,
   width: "100%",
+  marginTop: "1vh",
+  marginBottom: "1vh"
 }
 
 const sxMultiline = {
@@ -62,6 +64,8 @@ function JobCreate() {
   const [selectFramework, setSelectFramework] = useState([])
   const [selectFieldOfstudy, setSelectFieldOfStudy] = useState([])
   const [location, setLocation] = useState([1.2931213, 103.8498238]) //Location set at cityhall
+  const [payError, setPayError] = useState(false)
+  const [emptyError, setEmptyError] = useState(false)
   let navigate = useNavigate()
 
   // handleInput will handle regular form data
@@ -76,19 +80,29 @@ function JobCreate() {
     let timestamp = JSON.stringify(new Date().getTime()) // Unix timestamp
     formData['minPay'] = parseInt(formData['minPay'])
     formData['maxPay'] = parseInt(formData['maxPay'])
-    await axios.post('http://localhost:3005/job-offer/add', {
-      creator: Cookies.get('_id'),
-      ...formData,
-      jobTags: selectJob,
-      programmingLanguage: selectProgrammingLanguage,
-      framework: selectFramework,
-      fieldOfStudy: selectFieldOfstudy,
-      location,
-      timestamp
-    })
-      .then(x => {
-        navigate('../job/edit')
+    if (formData['minPay'] > formData['maxPay']) {
+      setPayError(true)
+    }
+    else if ( !formData['jobDescription'] && !formData['organizationName'] && !formData['organizationImageurl'] ) {
+      setEmptyError(true)
+    }
+    else {
+      setPayError(false)
+      setEmptyError(false)
+      await axios.post('https://warm-citadel-62203.herokuapp.com/job-offer/add', {
+        creator: Cookies.get('_id'),
+        ...formData,
+        jobTags: selectJob,
+        programmingLanguage: selectProgrammingLanguage,
+        framework: selectFramework,
+        fieldOfStudy: selectFieldOfstudy,
+        location,
+        timestamp
       })
+        .then(x => {
+          navigate('../job/edit')
+        })
+    }
   }
 
   ////////
@@ -114,16 +128,17 @@ function JobCreate() {
             xs: "left",
             backgroundColor: "rgb(255,255,255)",
             marginTop: {
-              xs:"10vh",
-              md:"5vh"
+              xs: "10vh",
+              md: "5vh"
             }
           },
           // textAlign:"left"
         }}
       >
-        <Stack direction='column' spacing={2}>
+        <Stack direction='column' spacing={5}>
 
-          <div style={{marginTop:"10vh"}}>
+          <div style={{ marginTop: "100px" }}>
+
             <Typography variant='h3'>Create posting</Typography>
             <FormControl
               sx={sxField}
@@ -336,6 +351,14 @@ function JobCreate() {
           >
             Submit
           </Button>
+
+          <div style={{ display: payError ? "block" : "none", color: "red", marginTop: "10px" }}>
+            <Typography>Minimum pay must be less than maximum pay</Typography>
+          </div>
+
+          <div style={{ display: emptyError ? "block" : "none", color: "red", marginTop: "10px" }}>
+            <Typography>Fields cannot be empty</Typography>
+          </div>
 
         </Container>
       </Container>
